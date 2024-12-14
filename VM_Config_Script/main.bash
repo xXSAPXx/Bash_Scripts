@@ -102,7 +102,7 @@ check_system_updates() {
 
 
 
-#  Function to update system packages
+# Function to update system packages
 update_system() {
     echo -e "_________________________________________________________________________________"
     echo
@@ -127,8 +127,20 @@ update_system() {
             echo
             echo -e "╰┈➤   ${GREEN}System updated successfully.${RESET}"
             echo
-            echo
-        elif [ $CHECK_UPDATE_EXIT_CODE -eq 0 ]; then
+            echo -e "╰┈➤   ${YELLOW}Reboot is good practice after OS Upgrade${RESET}"
+                        echo
+                        read -p "Would you like to reboot now? (Y/N): " REBOOT_ANSWER
+                                if [[ "$REBOOT_ANSWER" =~ ^[Yy]$ ]]; then
+                                        echo
+                                        echo -e "🔄  ${YELLOW}Rebooting now...${RESET}"
+                                        echo
+                                        sudo reboot
+                                else
+                                        echo
+                                        echo -e "╰┈➤  ${YELLOW}Reboot skipped. Please remember to reboot later if required.${RESET}"
+                                        echo
+                                fi
+                elif [ $CHECK_UPDATE_EXIT_CODE -eq 0 ]; then
             echo -e "✅  ${GREEN}No updates available. Your system is up to date.${RESET}"
             echo
         else
@@ -145,6 +157,7 @@ update_system() {
         return 1
     fi
 }
+
 
 
 #  Function to check if EPEL Repo is installed
