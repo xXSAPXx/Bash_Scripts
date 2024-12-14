@@ -14,7 +14,7 @@ show_help() {
     echo
     echo "Possible Options For Execution: 🔧"
     echo
-    echo "  --report    Show VM details and check if required packages are installed."
+    echo "  --report    Show VM details / Check installed packages / Check for OS Updates."
     echo
     echo "  --fix       Check if required  packages are installed - if not, install them."
     echo
