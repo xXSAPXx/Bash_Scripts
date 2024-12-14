@@ -3,6 +3,7 @@
 # Colors for output
 GREEN="\e[32m"
 RED="\e[31m"
+YELLOW="\e[33m"
 RESET="\e[0m"
 
 
@@ -16,6 +17,8 @@ show_help() {
     echo "  --report    Show VM details and check if required packages are installed."
     echo
     echo "  --fix       Check if required  packages are installed - if not, install them."
+    echo
+    echo "  --update    Check If System Packages are updated - if not, update the system."
     echo
     echo "  --help      Display this help message."
     echo
@@ -56,19 +59,42 @@ print_vm_details() {
 }
 
 
-# Function to check if htop is installed
-check_htop() {
+
+# Function to check for system updates
+check_system_updates() {
     echo -e "_________________________________________________________________________________"
     echo
-    echo -e "Checking Installed Packages:"
-    if command -v htop &>/dev/null; then
+    echo -e "Checking for System Updates:"
+
+    if command -v dnf &>/dev/null; then
         echo
-        echo -e "✅  ${GREEN}htop is installed.${RESET}"
+        echo -e "✅  ${GREEN}dnf package manager is available.${RESET}"
         echo
+
+        # Run check-update and store the exit code immediately
+        sudo dnf check-update &>/dev/null
+        CHECK_UPDATE_EXIT_CODE=$?
+
+        if [ $CHECK_UPDATE_EXIT_CODE -eq 100 ]; then
+            echo
+            echo -e "╰┈➤   ${YELLOW}Updates are available.${RESET}"
+            echo
+            echo
+
+        elif [ $CHECK_UPDATE_EXIT_CODE -eq 0 ]; then
+            echo -e "✅  ${GREEN}No updates available. Your system is up to date.${RESET}"
+            echo
+
+        else
+            echo -e "❌  ${RED}Failed to check for updates. Please check your connection or configuration.${RESET}"
+            echo
+            return 1
+        fi
+
         return 0
     else
         echo
-        printf '\u274c  ' && echo -e "${RED}htop is not installed.${RESET}"
+        printf '\u274c  ' && echo -e "${RED}dnf package manager is not installed or not available.${RESET}"
         echo
         return 1
     fi
@@ -76,18 +102,49 @@ check_htop() {
 
 
 
-# Function to install htop
-install_htop() {
-    echo "Installing htop..."
-    if sudo dnf install -y htop &>/dev/null; then
-        echo -e "${GREEN}htop has been successfully installed.${RESET}"
+#  Function to update system packages
+update_system() {
+    echo -e "_________________________________________________________________________________"
+    echo
+    echo -e "Checking for System Updates:"
+
+    if command -v dnf &>/dev/null; then
         echo
+        echo -e "✅  ${GREEN}dnf package manager is available.${RESET}"
+        echo
+
+        # Run check-update and store the exit code immediately
+        sudo dnf check-update &>/dev/null
+        CHECK_UPDATE_EXIT_CODE=$?
+
+        if [ $CHECK_UPDATE_EXIT_CODE -eq 100 ]; then
+            echo
+            echo -e "╰┈➤   ${YELLOW}Updates are available. Installing Updates.... ${RESET}"
+            echo
+            echo
+            sudo dnf upgrade -y
+            echo
+            echo
+            echo -e "╰┈➤   ${GREEN}System updated successfully.${RESET}"
+            echo
+            echo
+        elif [ $CHECK_UPDATE_EXIT_CODE -eq 0 ]; then
+            echo -e "✅  ${GREEN}No updates available. Your system is up to date.${RESET}"
+            echo
+        else
+            echo -e "❌  ${RED}Failed to check for updates. Please check your connection or configuration.${RESET}"
+            echo
+            return 1
+        fi
+
+        return 0
     else
-        echo -e "${RED}Failed to install htop.${RESET}"
         echo
+        printf '\u274c  ' && echo -e "${RED}dnf package manager is not installed or not available.${RESET}"
+        echo
+        return 1
     fi
 }
-
 
 
 #  Function to check if EPEL Repo is installed
@@ -132,6 +189,98 @@ install_epel_repo() {
 
 
 
+# Function to check if htop is installed
+check_htop() {
+    echo -e "_________________________________________________________________________________"
+    echo
+    echo -e "Checking Installed Packages:"
+    if command -v htop &>/dev/null; then
+        echo
+        echo -e "✅  ${GREEN}htop is installed.${RESET}"
+        echo
+        return 0
+    else
+        echo
+        printf '\u274c  ' && echo -e "${RED}htop is not installed.${RESET}"
+        echo
+        return 1
+    fi
+}
+
+
+
+# Function to install htop
+install_htop() {
+    echo "Installing htop..."
+    if sudo dnf install -y htop &>/dev/null; then
+        echo -e "${GREEN}htop has been successfully installed.${RESET}"
+        echo
+    else
+        echo -e "${RED}Failed to install htop.${RESET}"
+        echo
+    fi
+}
+
+
+
+# Function to check curl
+check_curl() {
+    if command -v curl &>/dev/null; then
+        echo -e "✅  ${GREEN}curl is installed.${RESET}"
+        echo
+        return 0
+    else
+        printf '\u274c  ' && echo -e "${RED}curl is not installed.${RESET}"
+        echo
+        return 1
+    fi
+}
+
+
+
+# Function to install curl:
+install_curl() {
+    echo "Installing curl..."
+    if sudo dnf install -y htop &>/dev/null; then
+        echo -e "${GREEN}curl has been successfully installed.${RESET}"
+        echo
+    else
+        echo -e "${RED}Failed to install curl.${RESET}"
+        echo
+    fi
+}
+
+
+# Function to check git
+check_git() {
+    if command -v git &>/dev/null; then
+        echo -e "✅  ${GREEN}git is installed.${RESET}"
+        echo
+        return 0
+    else
+        printf '\u274c  ' && echo -e "${RED}git is not installed.${RESET}"
+        echo
+        return 1
+    fi
+}
+
+
+
+# Function to install git:
+install_git() {
+    echo "Installing git..."
+    if sudo dnf install -y git &>/dev/null; then
+        echo -e "${GREEN}git has been successfully installed.${RESET}"
+        echo
+    else
+        echo -e "${RED}Failed to install git.${RESET}"
+        echo
+    fi
+}
+
+
+
+
 
 ###################################################
 ############## Main script logic ##################
@@ -153,6 +302,9 @@ case "$1" in
         print_vm_details
         check_epel_repo
         check_htop
+        check_curl
+        check_git
+        check_system_updates
         ;;
     --fix)
         print_vm_details
@@ -162,6 +314,15 @@ case "$1" in
         if ! check_htop; then
              install_htop
         fi
+        if ! check_curl; then
+             install_curl
+        fi
+        if ! check_git; then
+             install_git
+        fi
+        ;;
+    --update)
+        update_system
         ;;
     --help)
         show_help
