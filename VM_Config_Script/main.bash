@@ -54,8 +54,6 @@ print_vm_details() {
     echo
     echo "Firmware Version: $(dmidecode -s bios-version)"
     echo
-    echo -e "_________________________________________________________________________________"
-    echo
 }
 
 
@@ -129,7 +127,7 @@ update_system() {
             echo
             echo -e "╰┈➤   ${YELLOW}Reboot is good practice after OS Upgrade${RESET}"
                         echo
-                        read -p "Would you like to reboot now? (Y/N): " REBOOT_ANSWER
+                        read -p "╰┈➤   Would you like to reboot now? (Y/N): " REBOOT_ANSWER
                                 if [[ "$REBOOT_ANSWER" =~ ^[Yy]$ ]]; then
                                         echo
                                         echo -e "🔄  ${YELLOW}Rebooting now...${RESET}"
@@ -137,7 +135,7 @@ update_system() {
                                         sudo reboot
                                 else
                                         echo
-                                        echo -e "╰┈➤  ${YELLOW}Reboot skipped. Please remember to reboot later if required.${RESET}"
+                                        echo -e "╰┈➤   ${YELLOW}Reboot skipped. Please remember to reboot later if required.${RESET}"
                                         echo
                                 fi
                 elif [ $CHECK_UPDATE_EXIT_CODE -eq 0 ]; then
@@ -162,11 +160,11 @@ update_system() {
 
 #  Function to check if EPEL Repo is installed
 check_epel_repo() {
+    echo -e "_________________________________________________________________________________"
     echo
     echo -e "Checking Installed Repositories:"
     echo
     if rpm -q epel-release &>/dev/null; then
-        echo
         echo -e "✅  ${GREEN}EPEL repository is installed.${RESET}"
         echo
         return 0
@@ -320,7 +318,6 @@ case "$1" in
         check_system_updates
         ;;
     --fix)
-        print_vm_details
         if ! check_epel_repo; then
              install_epel_repo
         fi
@@ -333,6 +330,7 @@ case "$1" in
         if ! check_git; then
              install_git
         fi
+        check_system_updates
         ;;
     --update)
         update_system
