@@ -137,7 +137,7 @@ update_system() {
                                         sudo reboot
                                 else
                                         echo
-                                        echo -e "╰┈➤  ${YELLOW}Reboot skipped. Please remember to reboot later if required.${RESET}"
+                                        echo -e "╰┈➤   ${YELLOW}Reboot skipped. Please remember to reboot later if required.${RESET}"
                                         echo
                                 fi
                 elif [ $CHECK_UPDATE_EXIT_CODE -eq 0 ]; then
@@ -320,7 +320,8 @@ case "$1" in
         check_system_updates
         ;;
     --fix)
-        print_vm_details
+        echo -e "_________________________________________________________________________________"
+
         if ! check_epel_repo; then
              install_epel_repo
         fi
