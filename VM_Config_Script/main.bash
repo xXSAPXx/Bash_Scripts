@@ -54,8 +54,6 @@ print_vm_details() {
     echo
     echo "Firmware Version: $(dmidecode -s bios-version)"
     echo
-    echo -e "_________________________________________________________________________________"
-    echo
 }
 
 
@@ -162,11 +160,11 @@ update_system() {
 
 #  Function to check if EPEL Repo is installed
 check_epel_repo() {
+    echo -e "_________________________________________________________________________________"
     echo
     echo -e "Checking Installed Repositories:"
     echo
     if rpm -q epel-release &>/dev/null; then
-        echo
         echo -e "✅  ${GREEN}EPEL repository is installed.${RESET}"
         echo
         return 0
@@ -320,8 +318,6 @@ case "$1" in
         check_system_updates
         ;;
     --fix)
-        echo -e "_________________________________________________________________________________"
-
         if ! check_epel_repo; then
              install_epel_repo
         fi
