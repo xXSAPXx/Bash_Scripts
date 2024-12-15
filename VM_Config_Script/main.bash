@@ -333,6 +333,7 @@ case "$1" in
         if ! check_git; then
              install_git
         fi
+        check_system_updates
         ;;
     --update)
         update_system
