@@ -129,7 +129,7 @@ update_system() {
             echo
             echo -e "╰┈➤   ${YELLOW}Reboot is good practice after OS Upgrade${RESET}"
                         echo
-                        read -p "╰┈➤   ${YELLOW}Would you like to reboot now? (Y/N): ${RESET}" REBOOT_ANSWER
+                        read -p "╰┈➤   Would you like to reboot now? (Y/N): " REBOOT_ANSWER
                                 if [[ "$REBOOT_ANSWER" =~ ^[Yy]$ ]]; then
                                         echo
                                         echo -e "🔄  ${YELLOW}Rebooting now...${RESET}"
