@@ -234,6 +234,35 @@ install_htop() {
 
 
 
+# Function to check btop
+check_btop() {
+    if command -v btop &>/dev/null; then
+        echo -e "✅  ${GREEN}btop is installed.${RESET}"
+        echo
+        return 0
+    else
+        printf '\u274c  ' && echo -e "${RED}btop is not installed.${RESET}"
+        echo
+        return 1
+    fi
+}
+
+
+
+# Function to install btop
+install_btop() {
+    echo "Installing btop..."
+    if sudo dnf install -y btop &>/dev/null; then
+        echo -e "${GREEN}btop has been successfully installed.${RESET}"
+        echo
+    else
+        echo -e "${RED}Failed to install btop.${RESET}"
+        echo
+    fi
+}
+
+
+
 # Function to check curl
 check_curl() {
     if command -v curl &>/dev/null; then
@@ -369,6 +398,7 @@ case "$1" in
         print_vm_details
         check_epel_repo
         check_htop
+        check_btop
         check_curl
         check_git
         check_wget
@@ -381,6 +411,9 @@ case "$1" in
         fi
         if ! check_htop; then
              install_htop
+        fi
+        if ! check_btop; then
+             install_btop
         fi
         if ! check_curl; then
              install_curl
