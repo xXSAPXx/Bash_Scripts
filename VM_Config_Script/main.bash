@@ -291,6 +291,62 @@ install_git() {
 
 
 
+# Function to check wget
+check_wget() {
+    if command -v wget &>/dev/null; then
+        echo -e "✅  ${GREEN}wget is installed.${RESET}"
+        echo
+        return 0
+    else
+        printf '\u274c  ' && echo -e "${RED}wget is not installed.${RESET}"
+        echo
+        return 1
+    fi
+}
+
+
+
+# Function to install wget
+install_wget() {
+    echo "Installing wget..."
+    if sudo dnf install -y wget &>/dev/null; then
+        echo -e "${GREEN}wget has been successfully installed.${RESET}"
+        echo
+    else
+        echo -e "${RED}Failed to install wget.${RESET}"
+        echo
+    fi
+}
+
+
+
+# Function to check tmux
+check_tmux() {
+    if command -v tmux &>/dev/null; then
+        echo -e "✅  ${GREEN}tmux is installed.${RESET}"
+        echo
+        return 0
+    else
+        printf '\u274c  ' && echo -e "${RED}tmux is not installed.${RESET}"
+        echo
+        return 1
+    fi
+}
+
+
+
+# Function to install tmux
+install_tmux() {
+    echo "Installing tmux..."
+    if sudo dnf install -y tmux &>/dev/null; then
+        echo -e "${GREEN}tmux has been successfully installed.${RESET}"
+        echo
+    else
+        echo -e "${RED}Failed to install tmux.${RESET}"
+        echo
+    fi
+}
+
 
 
 ################################################################
@@ -315,6 +371,8 @@ case "$1" in
         check_htop
         check_curl
         check_git
+        check_wget
+        check_tmux
         check_system_updates
         ;;
     --fix)
@@ -329,6 +387,12 @@ case "$1" in
         fi
         if ! check_git; then
              install_git
+        fi
+        if ! check_wget; then
+             install_wget
+        fi
+        if ! check_tmux; then
+             install_tmux
         fi
         check_system_updates
         ;;
