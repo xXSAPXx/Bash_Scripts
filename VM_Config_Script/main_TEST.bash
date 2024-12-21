@@ -1,4 +1,6 @@
 #!/bin/bash
+set -euo pipefail
+
 
 # Colors for output
 GREEN="\e[32m"
