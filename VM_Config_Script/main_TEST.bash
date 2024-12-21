@@ -441,6 +441,7 @@ case "$1" in
         echo -e "\n"
         echo -e "${RED}Error: Invalid argument '$1'.${RESET}"
         echo -e "${RED}Please use one of the following valid arguments: --fix, --report, or --help.${RESET}"
+        echo
         echo -e "╰┈➤   ${YELLOW}Use '--help' for more information.${RESET}"
         echo -e "\n"
         exit 1
