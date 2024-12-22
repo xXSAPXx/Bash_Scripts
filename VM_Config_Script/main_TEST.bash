@@ -458,8 +458,8 @@ case "$1" in
         print_vm_details
         check_epel_repo
         check_htop
-		check_atop
-		check_iotop
+	check_atop
+	check_iotop
         check_btop
         check_curl
         check_git
@@ -477,12 +477,12 @@ case "$1" in
         if ! check_btop; then
              install_btop
         fi
-		if ! check_atop; then
-			 install_atop
-		fi
-		if ! check_iotop; then
-			 install_iotop
-		fi
+	if ! check_atop; then
+	     install_atop
+	fi
+	if ! check_iotop; then
+	     install_iotop
+	fi
         if ! check_curl; then
              install_curl
         fi
