@@ -264,6 +264,63 @@ install_btop() {
 }
 
 
+# Function to check atop 
+check_atop() {
+    if command -v atop &>/dev/null; then
+        echo -e "✅  ${GREEN}atop is installed.${RESET}"
+        echo
+        return 0
+    else
+        printf '\u274c  ' && echo -e "${RED}atop is not installed.${RESET}"
+        echo
+        return 1
+    fi
+}
+
+
+
+# Function to install atop
+install_atop() {
+    echo "Installing atop..."
+    if sudo dnf install -y atop &>/dev/null; then
+        echo -e "${GREEN}atop has been successfully installed.${RESET}"
+        echo
+    else
+        echo -e "${RED}Failed to install atop.${RESET}"
+        echo
+    fi
+}
+
+
+
+# Function to check iotop
+check_iotop() {
+    if command -v iotop &>/dev/null; then
+        echo -e "✅  ${GREEN}iotop is installed.${RESET}"
+        echo
+        return 0
+    else
+        printf '\u274c  ' && echo -e "${RED}iotop is not installed.${RESET}"
+        echo
+        return 1
+    fi
+}
+
+
+
+# Function to install iotop
+install_iotop() {
+    echo "Installing iotop..."
+    if sudo dnf install -y iotop &>/dev/null; then
+        echo -e "${GREEN}iotop has been successfully installed.${RESET}"
+        echo
+    else
+        echo -e "${RED}Failed to install iotop.${RESET}"
+        echo
+    fi
+}
+
+
 
 # Function to check curl
 check_curl() {
@@ -283,7 +340,7 @@ check_curl() {
 # Function to install curl:
 install_curl() {
     echo "Installing curl..."
-    if sudo dnf install -y htop &>/dev/null; then
+    if sudo dnf install -y curl &>/dev/null; then
         echo -e "${GREEN}curl has been successfully installed.${RESET}"
         echo
     else
@@ -380,6 +437,7 @@ install_tmux() {
 
 
 
+
 ################################################################
 #                      Main script logic                       #
 ################################################################
@@ -400,6 +458,8 @@ case "$1" in
         print_vm_details
         check_epel_repo
         check_htop
+	check_atop
+	check_iotop
         check_btop
         check_curl
         check_git
@@ -412,11 +472,17 @@ case "$1" in
              install_epel_repo
         fi
         if ! check_htop; then
-             install_htop
+             install_htop	 
         fi
         if ! check_btop; then
              install_btop
         fi
+	if ! check_atop; then
+	     install_atop
+	fi
+	if ! check_iotop; then
+	     install_iotop
+	fi
         if ! check_curl; then
              install_curl
         fi
