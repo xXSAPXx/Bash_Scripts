@@ -8,6 +8,9 @@ RED="\e[31m"
 YELLOW="\e[33m"
 RESET="\e[0m"
 
+# List of DNF Packages to check for and then install:
+package_list=("htop" "btop" "atop" "iotop" "sysstat" "lsof" "curl" "wget" "bind-utils" "iproute" "telnet" "tcpdump" "traceroute" "git" "tmux" "python3-dnf-plugin-versionlock")
+
 
 
 # Function to display help
@@ -127,7 +130,7 @@ update_system() {
             echo
             echo -e "╰┈➤   ${GREEN}System updated successfully.${RESET}"
             echo
-            echo -e "╰┈➤   ${YELLOW}Reboot is good practice after OS Upgrade${RESET}"
+            echo -e "╰┈➤   ${YELLOW}Reboot is a  good practice after OS Update${RESET}"
                         echo
                         read -p "╰┈➤   Would you like to reboot now? (Y/N): " REBOOT_ANSWER
                                 if [[ "$REBOOT_ANSWER" =~ ^[Yy]$ ]]; then
@@ -181,11 +184,15 @@ check_epel_repo() {
 
 #  Function to install EPEL Repo
 install_epel_repo() {
+    echo -e "_________________________________________________________________________________"
+    echo
+    echo -e "Checking Installed Repositories:"
+    echo
     if rpm -q epel-release &>/dev/null; then
         echo -e "${GREEN}EPEL repository is already installed.${RESET}"
+        echo
         return 0
     else
-        echo
         echo -e "${YELLOW}Installing EPEL repository...${RESET}"
         sudo dnf install -y epel-release &>/dev/null
         if [ $? -eq 0 ]; then
@@ -202,239 +209,50 @@ install_epel_repo() {
 
 
 
-# Function to check if htop is installed
-check_htop() {
+# Function to check installed packages:
+check_installed_packages() {
     echo -e "_________________________________________________________________________________"
     echo
     echo -e "Checking Installed Packages:"
-    if command -v htop &>/dev/null; then
-        echo
-        echo -e "✅  ${GREEN}htop is installed.${RESET}"
-        echo
-        return 0
-    else
-        echo
-        printf '\u274c  ' && echo -e "${RED}htop is not installed.${RESET}"
-        echo
-        return 1
-    fi
+    echo
+    for package in "${package_list[@]}"; do
+        if rpm -qa | grep "^${package}-" &>/dev/null; then
+            echo
+            echo -e "✅  ${GREEN}$package is installed.${RESET}"
+        else
+            echo
+            printf '\u274c  ' && echo -e "${RED}$package is not installed.${RESET}"
+            echo
+        fi
+    done
 }
 
 
 
-# Function to install htop
-install_htop() {
-    echo "Installing htop..."
-    if sudo dnf install -y htop &>/dev/null; then
-        echo -e "${GREEN}htop has been successfully installed.${RESET}"
-        echo
-    else
-        echo -e "${RED}Failed to install htop.${RESET}"
-        echo
-    fi
+# Function to install missing packages:
+install_missing_packages() {
+    echo -e "_________________________________________________________________________________"
+    echo
+    echo -e "Installing Missing Packages:"
+    for package in "${package_list[@]}"; do
+        if rpm -qa | grep "^${package}-" &>/dev/null; then
+            echo
+            echo -e "✅  ${GREEN}$package is installed.${RESET}"
+        else
+            echo
+            echo "Installing $package..."
+            if sudo dnf install -y "$package" &>/dev/null; then
+                echo
+                echo -e "${GREEN}$package has been successfully installed.${RESET}"
+                echo
+            else
+                echo
+                echo -e "${RED}Failed to install $package.${RESET}"
+                echo
+            fi
+        fi
+    done
 }
-
-
-
-# Function to check btop
-check_btop() {
-    if command -v btop &>/dev/null; then
-        echo -e "✅  ${GREEN}btop is installed.${RESET}"
-        echo
-        return 0
-    else
-        printf '\u274c  ' && echo -e "${RED}btop is not installed.${RESET}"
-        echo
-        return 1
-    fi
-}
-
-
-
-# Function to install btop
-install_btop() {
-    echo "Installing btop..."
-    if sudo dnf install -y btop &>/dev/null; then
-        echo -e "${GREEN}btop has been successfully installed.${RESET}"
-        echo
-    else
-        echo -e "${RED}Failed to install btop.${RESET}"
-        echo
-    fi
-}
-
-
-# Function to check atop 
-check_atop() {
-    if command -v atop &>/dev/null; then
-        echo -e "✅  ${GREEN}atop is installed.${RESET}"
-        echo
-        return 0
-    else
-        printf '\u274c  ' && echo -e "${RED}atop is not installed.${RESET}"
-        echo
-        return 1
-    fi
-}
-
-
-
-# Function to install atop
-install_atop() {
-    echo "Installing atop..."
-    if sudo dnf install -y atop &>/dev/null; then
-        echo -e "${GREEN}atop has been successfully installed.${RESET}"
-        echo
-    else
-        echo -e "${RED}Failed to install atop.${RESET}"
-        echo
-    fi
-}
-
-
-
-# Function to check iotop
-check_iotop() {
-    if command -v iotop &>/dev/null; then
-        echo -e "✅  ${GREEN}iotop is installed.${RESET}"
-        echo
-        return 0
-    else
-        printf '\u274c  ' && echo -e "${RED}iotop is not installed.${RESET}"
-        echo
-        return 1
-    fi
-}
-
-
-
-# Function to install iotop
-install_iotop() {
-    echo "Installing iotop..."
-    if sudo dnf install -y iotop &>/dev/null; then
-        echo -e "${GREEN}iotop has been successfully installed.${RESET}"
-        echo
-    else
-        echo -e "${RED}Failed to install iotop.${RESET}"
-        echo
-    fi
-}
-
-
-
-# Function to check curl
-check_curl() {
-    if command -v curl &>/dev/null; then
-        echo -e "✅  ${GREEN}curl is installed.${RESET}"
-        echo
-        return 0
-    else
-        printf '\u274c  ' && echo -e "${RED}curl is not installed.${RESET}"
-        echo
-        return 1
-    fi
-}
-
-
-
-# Function to install curl:
-install_curl() {
-    echo "Installing curl..."
-    if sudo dnf install -y curl &>/dev/null; then
-        echo -e "${GREEN}curl has been successfully installed.${RESET}"
-        echo
-    else
-        echo -e "${RED}Failed to install curl.${RESET}"
-        echo
-    fi
-}
-
-
-# Function to check git
-check_git() {
-    if command -v git &>/dev/null; then
-        echo -e "✅  ${GREEN}git is installed.${RESET}"
-        echo
-        return 0
-    else
-        printf '\u274c  ' && echo -e "${RED}git is not installed.${RESET}"
-        echo
-        return 1
-    fi
-}
-
-
-
-# Function to install git:
-install_git() {
-    echo "Installing git..."
-    if sudo dnf install -y git &>/dev/null; then
-        echo -e "${GREEN}git has been successfully installed.${RESET}"
-        echo
-    else
-        echo -e "${RED}Failed to install git.${RESET}"
-        echo
-    fi
-}
-
-
-
-# Function to check wget
-check_wget() {
-    if command -v wget &>/dev/null; then
-        echo -e "✅  ${GREEN}wget is installed.${RESET}"
-        echo
-        return 0
-    else
-        printf '\u274c  ' && echo -e "${RED}wget is not installed.${RESET}"
-        echo
-        return 1
-    fi
-}
-
-
-
-# Function to install wget
-install_wget() {
-    echo "Installing wget..."
-    if sudo dnf install -y wget &>/dev/null; then
-        echo -e "${GREEN}wget has been successfully installed.${RESET}"
-        echo
-    else
-        echo -e "${RED}Failed to install wget.${RESET}"
-        echo
-    fi
-}
-
-
-
-# Function to check tmux
-check_tmux() {
-    if command -v tmux &>/dev/null; then
-        echo -e "✅  ${GREEN}tmux is installed.${RESET}"
-        echo
-        return 0
-    else
-        printf '\u274c  ' && echo -e "${RED}tmux is not installed.${RESET}"
-        echo
-        return 1
-    fi
-}
-
-
-
-# Function to install tmux
-install_tmux() {
-    echo "Installing tmux..."
-    if sudo dnf install -y tmux &>/dev/null; then
-        echo -e "${GREEN}tmux has been successfully installed.${RESET}"
-        echo
-    else
-        echo -e "${RED}Failed to install tmux.${RESET}"
-        echo
-    fi
-}
-
 
 
 
@@ -457,44 +275,12 @@ case "$1" in
     --report)
         print_vm_details
         check_epel_repo
-        check_htop
-	check_atop
-	check_iotop
-        check_btop
-        check_curl
-        check_git
-        check_wget
-        check_tmux
+        check_installed_packages
         check_system_updates
         ;;
     --fix)
-        if ! check_epel_repo; then
-             install_epel_repo
-        fi
-        if ! check_htop; then
-             install_htop	 
-        fi
-        if ! check_btop; then
-             install_btop
-        fi
-	if ! check_atop; then
-	     install_atop
-	fi
-	if ! check_iotop; then
-	     install_iotop
-	fi
-        if ! check_curl; then
-             install_curl
-        fi
-        if ! check_git; then
-             install_git
-        fi
-        if ! check_wget; then
-             install_wget
-        fi
-        if ! check_tmux; then
-             install_tmux
-        fi
+        install_epel_repo
+        install_missing_packages
         check_system_updates
         ;;
     --update)
