@@ -9,7 +9,7 @@ YELLOW="\e[33m"
 RESET="\e[0m"
 
 # List of DNF Packages to check for and then install:
-package_list=("htop" "btop" "atop" "iotop" "sysstat" "curl" "git" "wget" "tmux" "lsof" "bind-utils" "telnet" "tcpdump" "traceroute")
+package_list=("htop" "btop" "atop" "iotop" "sysstat" "lsof" "curl" "wget" "bind-utils" "iproute" "telnet" "tcpdump" "traceroute" "git" "tmux" "python3-dnf-plugin-versionlock")
 
 
 
