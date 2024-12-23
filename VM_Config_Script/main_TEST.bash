@@ -186,6 +186,7 @@ check_epel_repo() {
 install_epel_repo() {
     echo -e "_________________________________________________________________________________"
     echo
+    echo -e "Checking Installed Repositories:"
     echo
     if rpm -q epel-release &>/dev/null; then
         echo -e "${GREEN}EPEL repository is already installed.${RESET}"
