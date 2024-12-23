@@ -238,7 +238,6 @@ install_missing_packages() {
         if rpm -qa | grep "^${package}-" &>/dev/null; then
             echo
             echo -e "✅  ${GREEN}$package is installed.${RESET}"
-            echo
         else
             echo
             echo "Installing $package..."
