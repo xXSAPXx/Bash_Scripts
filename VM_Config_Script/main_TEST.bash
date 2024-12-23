@@ -193,7 +193,6 @@ install_epel_repo() {
         echo
         return 0
     else
-        echo
         echo -e "${YELLOW}Installing EPEL repository...${RESET}"
         sudo dnf install -y epel-release &>/dev/null
         if [ $? -eq 0 ]; then
