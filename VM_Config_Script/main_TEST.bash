@@ -8,7 +8,7 @@ RED="\e[31m"
 YELLOW="\e[33m"
 RESET="\e[0m"
 
-# List of DNF Packages to check for and then install: 
+# List of DNF Packages to check for and then install:
 package_list=("htop" "btop" "atop" "iotop" "sysstat" "curl" "git" "wget" "tmux" "lsof" "bind-utils" "telnet" "tcpdump" "traceroute")
 
 
@@ -130,7 +130,7 @@ update_system() {
             echo
             echo -e "╰┈➤   ${GREEN}System updated successfully.${RESET}"
             echo
-            echo -e "╰┈➤   ${YELLOW}Reboot is good practice after OS Upgrade${RESET}"
+            echo -e "╰┈➤   ${YELLOW}Reboot is a  good practice after OS Update${RESET}"
                         echo
                         read -p "╰┈➤   Would you like to reboot now? (Y/N): " REBOOT_ANSWER
                                 if [[ "$REBOOT_ANSWER" =~ ^[Yy]$ ]]; then
@@ -184,8 +184,12 @@ check_epel_repo() {
 
 #  Function to install EPEL Repo
 install_epel_repo() {
+    echo -e "_________________________________________________________________________________"
+    echo
+    echo
     if rpm -q epel-release &>/dev/null; then
         echo -e "${GREEN}EPEL repository is already installed.${RESET}"
+        echo
         return 0
     else
         echo
@@ -204,16 +208,17 @@ install_epel_repo() {
 }
 
 
+
 # Function to check installed packages:
 check_installed_packages() {
+    echo -e "_________________________________________________________________________________"
     echo
     echo -e "Checking Installed Packages:"
     echo
     for package in "${package_list[@]}"; do
-        if command -v "$package" &>/dev/null; then
+        if rpm -qa | grep "^${package}-" &>/dev/null; then
             echo
             echo -e "✅  ${GREEN}$package is installed.${RESET}"
-            echo
         else
             echo
             printf '\u274c  ' && echo -e "${RED}$package is not installed.${RESET}"
@@ -223,11 +228,14 @@ check_installed_packages() {
 }
 
 
+
 # Function to install missing packages:
 install_missing_packages() {
+    echo -e "_________________________________________________________________________________"
     echo
+    echo -e "Installing Missing Packages:"
     for package in "${package_list[@]}"; do
-        if command -v "$package" &>/dev/null; then
+        if rpm -qa | grep "^${package}-" &>/dev/null; then
             echo
             echo -e "✅  ${GREEN}$package is installed.${RESET}"
             echo
@@ -242,8 +250,8 @@ install_missing_packages() {
                 echo
                 echo -e "${RED}Failed to install $package.${RESET}"
                 echo
-            fi 
-        fi 
+            fi
+        fi
     done
 }
 
@@ -267,10 +275,12 @@ fi
 case "$1" in
     --report)
         print_vm_details
-	check_installed_packages
+        check_epel_repo
+        check_installed_packages
         check_system_updates
         ;;
     --fix)
+        install_epel_repo
         install_missing_packages
         check_system_updates
         ;;
