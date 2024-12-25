@@ -367,7 +367,7 @@ bash_history_config() {
 
 	if [ "$(id -u)" -ne 0 ]; then
  		echo
-		echo -e "❌  ${RED}Must Be ROOT!${RESET}"
+		echo -e "❌  ${RED}Must Be ROOT to configure bash history!${RESET}"
 		
 	else	
 		if grep -qE '^\s*HISTSIZE=|^\s*HISTFILESIZE=|^\s*HISTIGNORE=|^\s*HISTCONTROL=|^\s*PROMPT_COMMAND=|^\s*HISTTIMEFORMAT=' "$BASHRC"; then
