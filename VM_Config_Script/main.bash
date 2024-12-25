@@ -330,7 +330,10 @@ prompt_config() {
         echo -e "${YELLOW}Bash prompt is not configured. Setting it now...${RESET}"
 
         # Append the prompt configuration to .bashrc:
-        echo -e "\n# If user ID = 0 then set red color for the prompt:\nif [ \"\$(id -u)\" -eq 0 ]; then\n    PS1='\\[\\e[1;31m\\]\\u\\e[0m@\\h:\\w\\$ '\nfi" >> "$BASHRC"
+        echo "# If user ID = 0 then set red color for the prompt: >> "$BASHRC"
+        echo "if [ \"\$(id -u)\" -eq 0 ]; then" >> "$BASHRC"
+        echo "PS1='\\[\\e[1;31m\\]\\u\\e[0m@\\h:\\w\\$ '" >> "$BASHRC"
+        echo "fi" >> "$BASHRC"
         echo
         echo -e "╰┈➤   ✅  ${GREEN}Bash prompt successfully configured!${RESET}"
     fi
