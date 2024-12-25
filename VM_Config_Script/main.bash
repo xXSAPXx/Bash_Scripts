@@ -12,8 +12,8 @@ RESET="\e[0m"
 package_list=("htop" "btop" "atop" "iotop" "sysstat" "lsof" "curl" "wget" "bind-utils" "iproute" "telnet" "tcpdump" "traceroute" "vim-enhanced" "bash-completion" "git" "tmux" "python3-dnf-plugin-versionlock")
 
 # List of functions for system checks and system configurations to be performed
-func_list_sys_checks=("prompt_check")
-func_list_sys_config=("prompt_config")
+func_list_sys_checks=("prompt_check" "bash_history_check")
+func_list_sys_config=("prompt_config" "bash_history_config")
 
 
 
@@ -330,7 +330,7 @@ prompt_config() {
         echo -e "${YELLOW}Bash prompt is not configured. Setting it now...${RESET}"
 
         # Append the prompt configuration to .bashrc:
-        echo "# If user ID = 0 then set red color for the prompt: >> "$BASHRC"
+        echo "# If user ID = 0 then set red color for the prompt:" >> "$BASHRC"
         echo "if [ "$(id -u)" -eq 0 ]; then" >> "$BASHRC"     
         echo "    PS1='\[\e[1;31m\]\u\e[0m@\h:\w\$ '" >> "$BASHRC"
         echo "fi" >> "$BASHRC"
@@ -338,6 +338,56 @@ prompt_config() {
         echo -e "╰┈➤   ✅  ${GREEN}Bash prompt successfully configured!${RESET}"
     fi
 }
+
+
+
+
+
+# Function to check if bash history is configured:
+bash_history_check() {
+
+	BASHRC=~/.bashrc
+	 
+	if grep -qE '^\s*HISTSIZE=|^\s*HISTFILESIZE=|^\s*HISTIGNORE=|^\s*HISTCONTROL=|^\s*PROMPT_COMMAND=|^\s*HISTTIMEFORMAT=' "$BASHRC"; then
+		echo
+		echo "Bash history settings are already configured."
+	else
+		echo
+		echo "Bash history settings are not configured!"
+	fi
+}
+
+
+
+# Function to configure bash history:
+bash_history_config() {
+	
+	BASHRC=~/.bashrc
+
+	if [ "$(id -u)" -ne 0 ]; then
+		echo -e "❌  ${RED}Must Be ROOT!${RESET}"
+		
+	else	
+		if grep -qE '^\s*HISTSIZE=|^\s*HISTFILESIZE=|^\s*HISTIGNORE=|^\s*HISTCONTROL=|^\s*PROMPT_COMMAND=|^\s*HISTTIMEFORMAT=' "$BASHRC"; then
+			echo
+			echo "Bash history settings are already configured."
+		else
+			echo "Configuring Bash history settings..."
+		
+			# Add history config settings: 
+			echo "# ROOT User Bash History Configuration:"
+			echo "HISTSIZE=1000" >> "$BASHRC"
+			echo "HISTFILESIZE=2000" >> "$BASHRC"
+			echo "HISTIGNORE=''" >> "$BASHRC"
+			echo "HISTCONTROL='ignoredups'" >> "$BASHRC"
+			echo "PROMPT_COMMAND='history -a'" >> "$BASHRC"
+			echo "HISTTIMEFORMAT=$(echo -e "\e[32m[\e[0m%F %T \e[33mUTC\e[0m\e[32m] \e[0m")" >> "$BASHRC"
+		
+			echo "Bash history settings added successfully!"
+		fi
+	fi	
+}	
+
 
 
 
