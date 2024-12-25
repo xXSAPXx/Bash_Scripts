@@ -366,6 +366,7 @@ bash_history_config() {
 	BASHRC=~/.bashrc
 
 	if [ "$(id -u)" -ne 0 ]; then
+ 		echo
 		echo -e "❌  ${RED}Must Be ROOT!${RESET}"
 		
 	else	
