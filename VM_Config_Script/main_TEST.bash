@@ -21,7 +21,9 @@ show_help() {
     echo
     echo "  --report    Show VM details / Check installed packages / Check for OS Updates."
     echo
-    echo "  --fix       Check if required  packages are installed - if not, install them."
+    echo "  --fix       Check if required packages and repositories are installed - if not, install them."
+    echo
+    echo "  --sysconf   Configure Prompt / History / Time / etc..."   
     echo
     echo "  --update    Check If System Packages are updated - if not, update the system."
     echo
@@ -256,6 +258,46 @@ install_missing_packages() {
 
 
 
+# Function for checking prompt_configuration:
+prompt_configuration_check() {
+	
+	BASHRC=~/.bashrc
+
+    # Check if prompt is already configured:
+    if grep -qE '^\s*PS1=' "$BASHRC"; then
+        echo
+        echo -e "✅  ${GREEN}Bash prompt is already configured.${RESET}"
+    else
+		echo
+        echo -e "❌  ${RED}Bash prompt is not configured.${RESET}"
+	fi
+}	
+
+
+
+# Function for installing prompt_configuration:
+prompt_configuration_install() {
+
+    BASHRC=~/.bashrc
+
+    # Check if prompt is already configured:
+    if grep -qE '^\s*PS1=' "$BASHRC"; then
+        echo
+        echo -e "✅  ${GREEN}Bash prompt is already configured.${RESET}"
+    else
+        echo "Bash prompt is not configured. Setting it now..."
+
+        # Append the prompt configuration to .bashrc:
+        echo -e "\n# If user ID = 0 then set red color for the prompt:\nif [ \"\$(id -u)\" -eq 0 ]; then\n    PS1='\\[\\e[1;31m\\]\\u\\e[0m@\\h:\\w\\$ '\nfi" >> "$BASHRC"
+        echo
+        echo -e "✅  ${GREEN}PS1 configuration added successfully!${RESET}"
+
+        # Reload .bashrc to apply the changes
+        source "$BASHRC"
+    fi
+}
+
+
 ################################################################
 #                      Main script logic                       #
 ################################################################
@@ -276,12 +318,16 @@ case "$1" in
         print_vm_details
         check_epel_repo
         check_installed_packages
+        prompt_configuration_check
         check_system_updates
         ;;
     --fix)
         install_epel_repo
         install_missing_packages
         check_system_updates
+        ;;
+    --sysconf)
+        prompt_configuration_install
         ;;
     --update)
         update_system
