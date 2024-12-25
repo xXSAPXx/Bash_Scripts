@@ -29,7 +29,7 @@ show_help() {
     echo
     echo "  --sys_report     Show VM System Configuration -- Prompt / History / Time / etc..."
     echo
-    echo "  --sys_conf       Configure Prompt / History / Time / etc..."   
+    echo "  --sys_conf       Configure Prompt / History / Time / etc..."
     echo
     echo "  --update         Check If System Packages are updated - if not, update the system."
     echo
@@ -272,10 +272,10 @@ check_system_config() {
     echo
     for func in "${func_list_sys_checks[@]}"; do
         if declare -f "$func" > /dev/null; then
-       
+
             "$func"   # Call the function
-    
-	    else
+
+            else
             echo -e "${RED}Function $func NOT FOUND!${RESET}"
         fi
     done
@@ -289,10 +289,10 @@ fix_system_config() {
     echo
     for func in "${func_list_sys_config[@]}"; do
         if declare -f "$func" > /dev/null; then
-       
+
             "$func"   # Call the function
-    
-	    else
+
+            else
             echo -e "${RED}Function $func NOT FOUND!${RESET}"
         fi
     done
@@ -303,18 +303,18 @@ fix_system_config() {
 ###################################################### SYSTEM CONFIG CHECKS / INSTALL FUNCTIONS ######################################################
 # Function for checking prompt_configuration:
 prompt_check() {
-	
-	BASHRC=~/.bashrc
+
+        BASHRC=~/.bashrc
 
     # Check if prompt is already configured:
     if grep -qE '^\s*PS1=' "$BASHRC"; then
         echo
         echo -e "✅  ${GREEN}Bash prompt is already configured.${RESET}"
     else
-		echo
+                echo
         echo -e "❌  ${RED}Bash prompt is not configured.${RESET}"
-	fi
-}	
+        fi
+}
 
 
 # Function for installing prompt_configuration:
@@ -327,12 +327,12 @@ prompt_config() {
         echo
         echo -e "✅  ${GREEN}Bash prompt is already configured.${RESET}"
     else
-        echo "Bash prompt is not configured. Setting it now..."
+        echo -e "${YELLOW}Bash prompt is not configured. Setting it now...${RESET}"
 
         # Append the prompt configuration to .bashrc:
         echo -e "\n# If user ID = 0 then set red color for the prompt:\nif [ \"\$(id -u)\" -eq 0 ]; then\n    PS1='\\[\\e[1;31m\\]\\u\\e[0m@\\h:\\w\\$ '\nfi" >> "$BASHRC"
         echo
-        echo -e "✅  ${GREEN}Bash prompt successfully configured!${RESET}"
+        echo -e "╰┈➤   ✅  ${GREEN}Bash prompt successfully configured!${RESET}"
     fi
 }
 
@@ -347,8 +347,8 @@ prompt_config() {
 if [ "$#" -ne 1 ]; then
    echo
    echo -e "${RED}Error: Exactly one argument is required.${RESET}"
-   echo 
-   echo -e "${RED}Please use one of the following valid arguments: --fix, --report, --update, --sysconf or --help.${RESET}"
+   echo
+   echo -e "${YELLOW}Please use one of the following valid arguments: --fix, --report, --update, --sysconf or --help.${RESET}"
    echo
    exit 1
 fi
@@ -368,7 +368,7 @@ case "$1" in
         check_system_updates
         ;;
     --sys_report)
-        check_system_config  
+        check_system_config
         ;;
     --sys_conf)
         fix_system_config
