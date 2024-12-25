@@ -12,8 +12,8 @@ RESET="\e[0m"
 package_list=("htop" "btop" "atop" "iotop" "sysstat" "lsof" "curl" "wget" "bind-utils" "iproute" "telnet" "tcpdump" "traceroute" "vim-enhanced" "bash-completion" "git" "tmux" "python3-dnf-plugin-versionlock")
 
 # List of functions for system checks and system configurations to be performed
-func_list_sys_checks=("prompt_check" "bash_history_check")
-func_list_sys_config=("prompt_config" "bash_history_config")
+func_list_sys_checks=("prompt_check" "bash_history_check" "time_format_check")
+func_list_sys_config=("prompt_config" "bash_history_config" "time_format_config")
 
 
 
@@ -139,19 +139,19 @@ update_system() {
             echo -e "╰┈➤   ${GREEN}System updated successfully.${RESET}"
             echo
             echo -e "╰┈➤   ${YELLOW}Reboot is a  good practice after OS Update${RESET}"
-                        echo
-                        read -p "╰┈➤   Would you like to reboot now? (Y/N): " REBOOT_ANSWER
-                                if [[ "$REBOOT_ANSWER" =~ ^[Yy]$ ]]; then
-                                        echo
-                                        echo -e "🔄  ${YELLOW}Rebooting now...${RESET}"
-                                        echo
-                                        sudo reboot
-                                else
-                                        echo
-                                        echo -e "╰┈➤   ${YELLOW}Reboot skipped. Please remember to reboot later if required.${RESET}"
-                                        echo
-                                fi
-                elif [ $CHECK_UPDATE_EXIT_CODE -eq 0 ]; then
+            echo
+            read -p "╰┈➤   Would you like to reboot now? (Y/N): " REBOOT_ANSWER
+                	if [[ "$REBOOT_ANSWER" =~ ^[Yy]$ ]]; then
+                        	echo
+                        	echo -e "🔄  ${YELLOW}Rebooting now...${RESET}"
+                        	echo
+                        	sudo reboot
+                	else
+                        	echo
+                        	echo -e "╰┈➤   ${YELLOW}Reboot skipped. Please remember to reboot later if required.${RESET}"
+                        	echo
+                	fi
+        elif [ $CHECK_UPDATE_EXIT_CODE -eq 0 ]; then
             echo -e "✅  ${GREEN}No updates available. Your system is up to date.${RESET}"
             echo
         else
@@ -304,16 +304,16 @@ fix_system_config() {
 # Function for checking prompt_configuration:
 prompt_check() {
 
-        BASHRC=~/.bashrc
+    BASHRC=~/.bashrc
 
     # Check if prompt is already configured:
     if grep -qE '^\s*PS1=' "$BASHRC"; then
-        echo
+	echo
         echo -e "✅  ${GREEN}Bash prompt is already configured.${RESET}"
     else
-        echo
-        echo -e "❌  ${RED}Bash prompt is not configured.${RESET}"
-        fi
+	echo
+	echo -e "❌  ${RED}Bash prompt is not configured.${RESET}"
+    fi
 }
 
 
@@ -347,15 +347,15 @@ prompt_config() {
 # Function to check if bash history is configured:
 bash_history_check() {
 
-	BASHRC=~/.bashrc
+    BASHRC=~/.bashrc
 	 
-	if grep -qE '^\s*HISTSIZE=|^\s*HISTFILESIZE=|^\s*HISTIGNORE=|^\s*HISTCONTROL=|^\s*PROMPT_COMMAND=|^\s*HISTTIMEFORMAT=' "$BASHRC"; then
-		echo
-		echo -e "✅  ${GREEN}Bash history settings are already configured.${RESET}"
-	else
-		echo
-		echo -e "❌  ${RED}Bash history settings are not configured.${RESET}"
-	fi
+    if grep -qE '^\s*HISTSIZE=|^\s*HISTFILESIZE=|^\s*HISTIGNORE=|^\s*HISTCONTROL=|^\s*PROMPT_COMMAND=|^\s*HISTTIMEFORMAT=' "$BASHRC"; then
+	echo
+	echo -e "✅  ${GREEN}Bash history settings are already configured.${RESET}"
+    else
+	echo
+	echo -e "❌  ${RED}Bash history settings are not configured.${RESET}"
+    fi
 }
 
 
@@ -363,36 +363,76 @@ bash_history_check() {
 # Function to configure bash history:
 bash_history_config() {
 	
-	BASHRC=~/.bashrc
+    BASHRC=~/.bashrc
 
-	if [ "$(id -u)" -ne 0 ]; then
- 		echo
-		echo -e "❌  ${RED}Must Be ROOT!${RESET}"
+    if [ "$(id -u)" -ne 0 ]; then
+ 	echo
+	echo -e "❌  ${RED}Must Be ROOT to configure Bash History!${RESET}"
 		
-	else	
-		if grep -qE '^\s*HISTSIZE=|^\s*HISTFILESIZE=|^\s*HISTIGNORE=|^\s*HISTCONTROL=|^\s*PROMPT_COMMAND=|^\s*HISTTIMEFORMAT=' "$BASHRC"; then
-			echo
-			echo -e "✅  ${GREEN}Bash history settings are already configured.${RESET}"
-		else
-  			echo 
-			echo -e "${YELLOW}Configuring Bash history settings...${RESET}"
+    else	
+	   if grep -qE '^\s*HISTSIZE=|^\s*HISTFILESIZE=|^\s*HISTIGNORE=|^\s*HISTCONTROL=|^\s*PROMPT_COMMAND=|^\s*HISTTIMEFORMAT=' "$BASHRC"; then
+		echo
+		echo -e "✅  ${GREEN}Bash history settings are already configured.${RESET}"
+	   else
+  		echo 
+		echo -e "${YELLOW}Configuring Bash history settings...${RESET}"
 		
-			# Add history config settings: 
-   			echo "" >> "$BASHRC"
-			echo "# ROOT User Bash History Configuration:" >> "$BASHRC"
+		# Add history config settings: 
+   		echo "" >> "$BASHRC"
+		echo "# ROOT User Bash History Configuration:" >> "$BASHRC"
 
-			echo "HISTSIZE=1000" >> "$BASHRC"
-			echo "HISTFILESIZE=2000" >> "$BASHRC"
-			echo "HISTIGNORE=''" >> "$BASHRC"
-			echo "HISTCONTROL='ignoredups'" >> "$BASHRC"
-			echo "PROMPT_COMMAND='history -a'" >> "$BASHRC"
-			echo 'HISTTIMEFORMAT=$(echo -e "\e[32m[\e[0m%F %T \e[33mUTC\e[0m\e[32m] \e[0m")' >> "$BASHRC"
+		echo "HISTSIZE=1000" >> "$BASHRC"
+		echo "HISTFILESIZE=2000" >> "$BASHRC"
+		echo "HISTIGNORE=''" >> "$BASHRC"
+		echo "HISTCONTROL='ignoredups'" >> "$BASHRC"
+		echo "PROMPT_COMMAND='history -a'" >> "$BASHRC"
+		echo 'HISTTIMEFORMAT=$(echo -e "\e[32m[\e[0m%F %T \e[33mUTC\e[0m\e[32m] \e[0m")' >> "$BASHRC"
 		
-			echo -e "╰┈➤   ✅  ${GREEN}Bash history settings added successfully!${RESET}"
-		fi
-	fi	
+		echo -e "╰┈➤   ✅  ${GREEN}Bash history settings added successfully!${RESET}"
+	fi
+    fi	
 }	
 
+
+
+time_format_check() {
+	
+    CONFIG_FILE=/etc/locale.conf
+	
+    if grep -qE '^\s*LC_TIME=' "$CONFIG_FILE"; then
+	echo
+	echo -e "✅  ${GREEN}Time Format is already configured.${RESET}"
+    else
+	echo
+	echo -e "❌  ${RED}Time Format is not configured.${RESET}"
+    fi
+}
+
+
+
+time_format_config() {
+	
+    CONFIG_FILE=/etc/locale.conf
+
+    if [ "$(id -u)" -ne 0 ]; then
+ 	echo
+	echo -e "❌  ${RED}Must Be ROOT to configure Time Format!${RESET}"
+		
+    else	
+		if grep -qE '^\s*LC_TIME=' "$CONFIG_FILE"; then
+			echo
+			echo -e "✅  ${GREEN}Time Format is already configured.${RESET}"
+		else
+			echo
+			echo -e "${YELLOW}Time Format is not configured. Setting it now...${RESET}"
+			
+			# Apply the changes using localectl
+			echo "LC_TIME=C.UTF-8" | sudo tee -a "$CONFIG_FILE" > /dev/null
+			
+			echo -e "╰┈➤   ✅  ${GREEN}Time Format set successfully!${RESET}"
+		fi	
+    fi
+}
 
 
 
