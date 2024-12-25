@@ -262,9 +262,20 @@ install_missing_packages() {
 
 
 
+# Function to initiate all check functions in (func_list_sys_checks):
+check_system_config() {
+    echo -e "_________________________________________________________________________________"
+    echo
+    echo -e "Checking Installed Packages:"
+    echo
 
 
-
+# Function to initiate all system configure functions in (func_list_sys_config):
+fix_system_config() {
+    echo -e "_________________________________________________________________________________"
+    echo
+    echo -e "Checking Installed Packages:"
+    echo
 
 
 
