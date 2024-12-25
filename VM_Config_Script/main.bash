@@ -311,7 +311,7 @@ prompt_check() {
         echo
         echo -e "✅  ${GREEN}Bash prompt is already configured.${RESET}"
     else
-                echo
+        echo
         echo -e "❌  ${RED}Bash prompt is not configured.${RESET}"
         fi
 }
@@ -330,6 +330,7 @@ prompt_config() {
         echo -e "${YELLOW}Bash prompt is not configured. Setting it now...${RESET}"
 
         # Append the prompt configuration to .bashrc:
+	echo "" >> "$BASHRC"
         echo "# If user ID = 0 then set red color for the prompt:" >> "$BASHRC"
         echo "if [ "$(id -u)" -eq 0 ]; then" >> "$BASHRC"     
         echo "    PS1='\[\e[1;31m\]\u\e[0m@\h:\w\$ '" >> "$BASHRC"
@@ -350,10 +351,10 @@ bash_history_check() {
 	 
 	if grep -qE '^\s*HISTSIZE=|^\s*HISTFILESIZE=|^\s*HISTIGNORE=|^\s*HISTCONTROL=|^\s*PROMPT_COMMAND=|^\s*HISTTIMEFORMAT=' "$BASHRC"; then
 		echo
-		echo "Bash history settings are already configured."
+		echo -e "✅  ${GREEN}Bash history settings are already configured.${RESET}"
 	else
 		echo
-		echo "Bash history settings are not configured!"
+		echo -e "❌  ${RED}Bash history settings are not configured!${RESET}"
 	fi
 }
 
@@ -370,9 +371,9 @@ bash_history_config() {
 	else	
 		if grep -qE '^\s*HISTSIZE=|^\s*HISTFILESIZE=|^\s*HISTIGNORE=|^\s*HISTCONTROL=|^\s*PROMPT_COMMAND=|^\s*HISTTIMEFORMAT=' "$BASHRC"; then
 			echo
-			echo "Bash history settings are already configured."
+			echo "✅  ${GREEN}Bash history settings are already configured.${RESET}"
 		else
-			echo "Configuring Bash history settings..."
+			echo "${YELLOW}Configuring Bash history settings...${RESET}"
 		
 			# Add history config settings: 
 			echo "# ROOT User Bash History Configuration:"
@@ -383,7 +384,7 @@ bash_history_config() {
 			echo "PROMPT_COMMAND='history -a'" >> "$BASHRC"
 			echo "HISTTIMEFORMAT=$(echo -e "\e[32m[\e[0m%F %T \e[33mUTC\e[0m\e[32m] \e[0m")" >> "$BASHRC"
 		
-			echo "Bash history settings added successfully!"
+			echo "╰┈➤   ✅  ${GREEN}Bash history settings added successfully!"
 		fi
 	fi	
 }	
