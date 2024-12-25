@@ -11,6 +11,10 @@ RESET="\e[0m"
 # List of DNF Packages to check for and then install:
 package_list=("htop" "btop" "atop" "iotop" "sysstat" "lsof" "curl" "wget" "bind-utils" "iproute" "telnet" "tcpdump" "traceroute" "vim-enhanced" "bash-completion" "git" "tmux" "python3-dnf-plugin-versionlock")
 
+# List of functions for system checks and system configurations to be performed
+func_list_sys_checks=("prompt_check")
+func_list_sys_config=("prompt_config")
+
 
 
 # Function to display help
@@ -258,44 +262,10 @@ install_missing_packages() {
 
 
 
-# Function for checking prompt_configuration:
-prompt_configuration_check() {
-	
-	BASHRC=~/.bashrc
-
-    # Check if prompt is already configured:
-    if grep -qE '^\s*PS1=' "$BASHRC"; then
-        echo
-        echo -e "✅  ${GREEN}Bash prompt is already configured.${RESET}"
-    else
-		echo
-        echo -e "❌  ${RED}Bash prompt is not configured.${RESET}"
-	fi
-}	
 
 
 
-# Function for installing prompt_configuration:
-prompt_configuration_install() {
 
-    BASHRC=~/.bashrc
-
-    # Check if prompt is already configured:
-    if grep -qE '^\s*PS1=' "$BASHRC"; then
-        echo
-        echo -e "✅  ${GREEN}Bash prompt is already configured.${RESET}"
-    else
-        echo "Bash prompt is not configured. Setting it now..."
-
-        # Append the prompt configuration to .bashrc:
-        echo -e "\n# If user ID = 0 then set red color for the prompt:\nif [ \"\$(id -u)\" -eq 0 ]; then\n    PS1='\\[\\e[1;31m\\]\\u\\e[0m@\\h:\\w\\$ '\nfi" >> "$BASHRC"
-        echo
-        echo -e "✅  ${GREEN}PS1 configuration added successfully!${RESET}"
-
-        # Reload .bashrc to apply the changes
-        source "$BASHRC"
-    fi
-}
 
 
 ################################################################
@@ -305,9 +275,11 @@ prompt_configuration_install() {
 
 # Main script logic
 if [ "$#" -ne 1 ]; then
-   echo -e "\n"
+   echo
    echo -e "${RED}Error: Exactly one argument is required.${RESET}"
-   echo -e "\n"
+   echo 
+   echo -e "${RED}Please use one of the following valid arguments: --fix, --report, --update, --sysconf or --help.${RESET}"
+   echo
    exit 1
 fi
 
@@ -318,7 +290,6 @@ case "$1" in
         print_vm_details
         check_epel_repo
         check_installed_packages
-        prompt_configuration_check
         check_system_updates
         ;;
     --fix)
@@ -327,7 +298,7 @@ case "$1" in
         check_system_updates
         ;;
     --sysconf)
-        prompt_configuration_install
+        
         ;;
     --update)
         update_system
