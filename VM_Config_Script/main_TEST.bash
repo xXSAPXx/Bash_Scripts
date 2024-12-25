@@ -139,19 +139,19 @@ update_system() {
             echo -e "╰┈➤   ${GREEN}System updated successfully.${RESET}"
             echo
             echo -e "╰┈➤   ${YELLOW}Reboot is a  good practice after OS Update${RESET}"
-                        echo
-                        read -p "╰┈➤   Would you like to reboot now? (Y/N): " REBOOT_ANSWER
-                                if [[ "$REBOOT_ANSWER" =~ ^[Yy]$ ]]; then
-                                        echo
-                                        echo -e "🔄  ${YELLOW}Rebooting now...${RESET}"
-                                        echo
-                                        sudo reboot
-                                else
-                                        echo
-                                        echo -e "╰┈➤   ${YELLOW}Reboot skipped. Please remember to reboot later if required.${RESET}"
-                                        echo
-                                fi
-                elif [ $CHECK_UPDATE_EXIT_CODE -eq 0 ]; then
+            echo
+            read -p "╰┈➤   Would you like to reboot now? (Y/N): " REBOOT_ANSWER
+                	if [[ "$REBOOT_ANSWER" =~ ^[Yy]$ ]]; then
+                        	echo
+                        	echo -e "🔄  ${YELLOW}Rebooting now...${RESET}"
+                        	echo
+                        	sudo reboot
+                	else
+                        	echo
+                        	echo -e "╰┈➤   ${YELLOW}Reboot skipped. Please remember to reboot later if required.${RESET}"
+                        	echo
+                	fi
+        elif [ $CHECK_UPDATE_EXIT_CODE -eq 0 ]; then
             echo -e "✅  ${GREEN}No updates available. Your system is up to date.${RESET}"
             echo
         else
