@@ -19,21 +19,23 @@ func_list_sys_config=("prompt_config")
 
 # Function to display help
 show_help() {
-    echo -e "_________________________________________________________________________________"
+    echo -e "____________________________________________________________________________________________________________________"
     echo
     echo "Possible Options For Execution: 🔧"
     echo
-    echo "  --report    Show VM details / Check installed packages / Check for OS Updates."
+    echo "  --report         Show VM details / Check installed packages / Check for OS Updates."
     echo
-    echo "  --fix       Check if required packages and repositories are installed - if not, install them."
+    echo "  --fix            Check if required packages and repositories are installed - if not, install them."
     echo
-    echo "  --sysconf   Configure Prompt / History / Time / etc..."   
+    echo "  --sys_report     Show VM System Configuration -- Prompt / History / Time / etc..."
     echo
-    echo "  --update    Check If System Packages are updated - if not, update the system."
+    echo "  --sys_conf       Configure Prompt / History / Time / etc..."   
     echo
-    echo "  --help      Display this help message."
+    echo "  --update         Check If System Packages are updated - if not, update the system."
     echo
-    echo -e "_________________________________________________________________________________"
+    echo "  --help           Display this help message."
+    echo
+    echo -e "____________________________________________________________________________________________________________________"
 
 }
 
@@ -266,22 +268,79 @@ install_missing_packages() {
 check_system_config() {
     echo -e "_________________________________________________________________________________"
     echo
-    echo -e "Checking Installed Packages:"
+    echo -e "Checking System Configuration:"
     echo
-
+    for func in "${func_list_sys_checks[@]}"; do
+        if declare -f "$func" > /dev/null; then
+       
+            "$func"   # Call the function
+    
+	    else
+            echo -e "${RED}Function $func NOT FOUND!${RESET}"
+        fi
+    done
+}
 
 # Function to initiate all system configure functions in (func_list_sys_config):
 fix_system_config() {
     echo -e "_________________________________________________________________________________"
     echo
-    echo -e "Checking Installed Packages:"
+    echo -e "Checking System Configuration:"
     echo
+    for func in "${func_list_sys_config[@]}"; do
+        if declare -f "$func" > /dev/null; then
+       
+            "$func"   # Call the function
+    
+	    else
+            echo -e "${RED}Function $func NOT FOUND!${RESET}"
+        fi
+    done
+}
+
+
+###################################################### SYSTEM CONFIG CHECKS / INSTALL FUNCTIONS ######################################################
+###################################################### SYSTEM CONFIG CHECKS / INSTALL FUNCTIONS ######################################################
+# Function for checking prompt_configuration:
+prompt_check() {
+	
+	BASHRC=~/.bashrc
+
+    # Check if prompt is already configured:
+    if grep -qE '^\s*PS1=' "$BASHRC"; then
+        echo
+        echo -e "✅  ${GREEN}Bash prompt is already configured.${RESET}"
+    else
+		echo
+        echo -e "❌  ${RED}Bash prompt is not configured.${RESET}"
+	fi
+}	
+
+
+# Function for installing prompt_configuration:
+prompt_config() {
+
+    BASHRC=~/.bashrc
+
+    # Check if prompt is already configured:
+    if grep -qE '^\s*PS1=' "$BASHRC"; then
+        echo
+        echo -e "✅  ${GREEN}Bash prompt is already configured.${RESET}"
+    else
+        echo "Bash prompt is not configured. Setting it now..."
+
+        # Append the prompt configuration to .bashrc:
+        echo -e "\n# If user ID = 0 then set red color for the prompt:\nif [ \"\$(id -u)\" -eq 0 ]; then\n    PS1='\\[\\e[1;31m\\]\\u\\e[0m@\\h:\\w\\$ '\nfi" >> "$BASHRC"
+        echo
+        echo -e "✅  ${GREEN}Bash prompt successfully configured!${RESET}"
+    fi
+}
 
 
 
-################################################################
-#                      Main script logic                       #
-################################################################
+##########################################################################################################################################################
+#                     Main script logic                           Main script logic                               Main script logic                      #
+##########################################################################################################################################################
 
 
 # Main script logic
@@ -308,8 +367,11 @@ case "$1" in
         install_missing_packages
         check_system_updates
         ;;
-    --sysconf)
-        
+    --sys_report
+        check_system_config  
+        ;;
+    --sys_conf)
+        fix_system_config
         ;;
     --update)
         update_system
@@ -320,7 +382,7 @@ case "$1" in
     *)
         echo -e "\n"
         echo -e "${RED}Error: Invalid argument '$1'.${RESET}"
-        echo -e "${RED}Please use one of the following valid arguments: --fix, --report, --update, --sysconf or --help.${RESET}"
+        echo -e "${RED}Please use one of the following valid arguments: --fix, --report, --update, --sys_report, --sys_conf or --help.${RESET}"
         echo
         echo -e "╰┈➤   ${YELLOW}Use '--help' for more information.${RESET}"
         echo -e "\n"
