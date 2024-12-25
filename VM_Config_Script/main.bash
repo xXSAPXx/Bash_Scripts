@@ -354,7 +354,7 @@ bash_history_check() {
 		echo -e "✅  ${GREEN}Bash history settings are already configured.${RESET}"
 	else
 		echo
-		echo -e "❌  ${RED}Bash history settings are not configured!${RESET}"
+		echo -e "❌  ${RED}Bash history settings are not configured.${RESET}"
 	fi
 }
 
@@ -371,20 +371,23 @@ bash_history_config() {
 	else	
 		if grep -qE '^\s*HISTSIZE=|^\s*HISTFILESIZE=|^\s*HISTIGNORE=|^\s*HISTCONTROL=|^\s*PROMPT_COMMAND=|^\s*HISTTIMEFORMAT=' "$BASHRC"; then
 			echo
-			echo "✅  ${GREEN}Bash history settings are already configured.${RESET}"
+			echo -e "✅  ${GREEN}Bash history settings are already configured.${RESET}"
 		else
-			echo "${YELLOW}Configuring Bash history settings...${RESET}"
+  			echo 
+			echo -e "${YELLOW}Configuring Bash history settings...${RESET}"
 		
 			# Add history config settings: 
-			echo "# ROOT User Bash History Configuration:"
+   			echo "" >> "$BASHRC"
+			echo "# ROOT User Bash History Configuration:" >> "$BASHRC"
+
 			echo "HISTSIZE=1000" >> "$BASHRC"
 			echo "HISTFILESIZE=2000" >> "$BASHRC"
 			echo "HISTIGNORE=''" >> "$BASHRC"
 			echo "HISTCONTROL='ignoredups'" >> "$BASHRC"
 			echo "PROMPT_COMMAND='history -a'" >> "$BASHRC"
-			echo "HISTTIMEFORMAT=$(echo -e "\e[32m[\e[0m%F %T \e[33mUTC\e[0m\e[32m] \e[0m")" >> "$BASHRC"
+			echo 'HISTTIMEFORMAT=$(echo -e "\e[32m[\e[0m%F %T \e[33mUTC\e[0m\e[32m] \e[0m")' >> "$BASHRC"
 		
-			echo "╰┈➤   ✅  ${GREEN}Bash history settings added successfully!"
+			echo -e "╰┈➤   ✅  ${GREEN}Bash history settings added successfully!${RESET}"
 		fi
 	fi	
 }	
