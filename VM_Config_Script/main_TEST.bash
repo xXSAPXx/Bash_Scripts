@@ -395,6 +395,46 @@ bash_history_config() {
 
 
 
+time_format_check() {
+	
+	CONFIG_FILE=/etc/locale.conf
+	
+	if grep -qE '^\s*LC_TIME=' "$CONFIG_FILE"; then
+		echo
+		echo -e "✅  ${GREEN}Time Format is already configured.${RESET}"
+	else
+		echo
+		echo -e "❌  ${RED}Time Format is not configured.${RESET}"
+	fi
+}
+
+
+
+time_format_config() {
+	
+	CONFIG_FILE=/etc/locale.conf
+
+	if [ "$(id -u)" -ne 0 ]; then
+ 		echo
+		echo -e "❌  ${RED}Must Be ROOT to configure Time Format!${RESET}"
+		
+	else	
+		if grep -qE '^\s*LC_TIME=' "$CONFIG_FILE"; then
+			echo
+			echo -e "✅  ${GREEN}Time Format is already configured.${RESET}"
+		else
+			echo
+			echo -e "${YELLOW}Time Format is not configured. Setting it now...${RESET}"
+			
+			# Apply the changes using localectl
+			echo "LC_TIME=C.UTF-8" | sudo tee -a "$CONFIG_FILE" > /dev/null
+			
+			echo "╰┈➤   ✅  ${GREEN}Time Format applied successfully!${RESET}"
+		fi	
+    fi
+}
+
+
 
 ##########################################################################################################################################################
 #                     Main script logic                           Main script logic                               Main script logic                      #
