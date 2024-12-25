@@ -12,8 +12,8 @@ RESET="\e[0m"
 package_list=("htop" "btop" "atop" "iotop" "sysstat" "lsof" "curl" "wget" "bind-utils" "iproute" "telnet" "tcpdump" "traceroute" "vim-enhanced" "bash-completion" "git" "tmux" "python3-dnf-plugin-versionlock")
 
 # List of functions for system checks and system configurations to be performed
-func_list_sys_checks=("prompt_check")
-func_list_sys_config=("prompt_config")
+func_list_sys_checks=("prompt_check" "bash_history_check")
+func_list_sys_config=("prompt_config" "bash_history_config")
 
 
 
@@ -299,42 +299,31 @@ fix_system_config() {
 }
 
 
-###################################################### SYSTEM CONFIG CHECKS / INSTALL FUNCTIONS ######################################################
-###################################################### SYSTEM CONFIG CHECKS / INSTALL FUNCTIONS ######################################################
+########################################################## SYSTEM CHECK / CONFIG FUNCTIONS ##########################################################
+########################################################## SYSTEM CHECK / CONFIG FUNCTIONS ##########################################################
 # Function for checking prompt_configuration:
 prompt_check() {
-
-        BASHRC=~/.bashrc
-
-    # Check if prompt is already configured:
-    if grep -qE '^\s*PS1=' "$BASHRC"; then
-        echo
-        echo -e "✅  ${GREEN}Bash prompt is already configured.${RESET}"
-    else
-                echo
-        echo -e "❌  ${RED}Bash prompt is not configured.${RESET}"
-        fi
 }
 
 
 # Function for installing prompt_configuration:
 prompt_config() {
-
-    BASHRC=~/.bashrc
-
-    # Check if prompt is already configured:
-    if grep -qE '^\s*PS1=' "$BASHRC"; then
-        echo
-        echo -e "✅  ${GREEN}Bash prompt is already configured.${RESET}"
-    else
-        echo -e "${YELLOW}Bash prompt is not configured. Setting it now...${RESET}"
-
-        # Append the prompt configuration to .bashrc:
-        echo -e "\n# If user ID = 0 then set red color for the prompt:\nif [ \"\$(id -u)\" -eq 0 ]; then\n    PS1='\\[\\e[1;31m\\]\\u\\e[0m@\\h:\\w\\$ '\nfi" >> "$BASHRC"
-        echo
-        echo -e "╰┈➤   ✅  ${GREEN}Bash prompt successfully configured!${RESET}"
-    fi
 }
+
+
+
+
+
+# Function to check if bash history is configured:
+bash_history_check() {
+}
+
+
+
+# Function to configure bash history:
+bash_history_config() {
+}	
+
 
 
 
