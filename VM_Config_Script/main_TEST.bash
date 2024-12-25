@@ -367,7 +367,7 @@ case "$1" in
         install_missing_packages
         check_system_updates
         ;;
-    --sys_report
+    --sys_report)
         check_system_config  
         ;;
     --sys_conf)
