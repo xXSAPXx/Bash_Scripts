@@ -429,7 +429,7 @@ time_format_config() {
 			# Apply the changes using localectl
 			echo "LC_TIME=C.UTF-8" | sudo tee -a "$CONFIG_FILE" > /dev/null
 			
-			echo -e "╰┈➤   ✅  ${GREEN}Time Format applied successfully!${RESET}"
+			echo -e "╰┈➤   ✅  ${GREEN}Time Format set successfully!${RESET}"
 		fi	
     fi
 }
