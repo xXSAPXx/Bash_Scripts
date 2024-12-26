@@ -39,21 +39,23 @@ echo "==================================================="
 echo "Network and Security Information:"
 echo
 echo -e "- Firewall Status (firewalld): $(if [[ $FIREWALL_STATUS -eq 0 ]]; then echo "${GREEN}Active${RESET}"; else echo "${RED}Inactive${RESET} --- ${YELLOW}Not Installed (Security Groups likely used)${RESET}"; fi)"
-echo -e "- Open Ports: $(ss -tunlp | awk '/LISTEN/ && $5 ~ /:/ {split($5, a, ":"); print a[2]}' | sort -n | uniq | awk 'NF {printf "[%s] ", $0}')"
+echo -e "- Service Ports in Use: $(ss -tunlp | awk '/LISTEN/ && $5 ~ /:/ {split($5, a, ":"); print a[2]}' | sort -n | uniq | awk 'NF {printf "[%s] ", $0}')"
 echo -e "- OpenSSH Version: $(ssh -V 2>&1 | cut -d' ' -f1-2)"
-echo -e "- Active Users: $(who)"
 echo -e "- Heartbleed vulnerability (OpenSSL): $(openssl version -a | grep -q 'OpenSSL 1.0.1[0-9a-f]*' && echo "Vulnerable, Update OpenSSL!" || echo "Not Vulnerable")"
 echo -e "- Shellshock vulnerability (Bash): $(env 'VAR=() { :;}; echo vulnerable' 'FUNCTION()=() { :;}; echo Vulnerable' bash -c 'echo Not Vulnerable')"
 echo
 echo "==================================================="
 echo "Listening Services:"
 echo
+echo -e "- Service Ports in Use: $(ss -tunlp | awk '/LISTEN/ && $5 ~ /:/ {split($5, a, ":"); print a[2]}' | sort -n | uniq | awk 'NF {printf "[%s] ", $0}')"
+echo
 echo "$(ss -tunlp | awk '/LISTEN/ {print "Service:", $7, "| Protocol:", $1, "| User:", $NF}' | column -t)"
 echo
 
 # Display ARP Table: 
-echo "- ARP Table :"
-echo "$(ip neigh)"
-echo
-echo "- Active Connections:"
-echo "$(ss -tunapl | grep ESTABLISHED)" 
+# echo "- ARP Table :"
+# echo "$(ip neigh)"
+# echo
+# echo "- Active Connections:"
+# echo "$(ss -tunapl | grep ESTABLISHED)" 
+# echo -e "- Active Users: $(who)"
