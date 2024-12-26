@@ -30,15 +30,15 @@ echo -e "- Connectivity: $(if [[ $CONNECTION_STATUS -eq 0 ]]; then echo "${GREEN
 echo "- Interfaces: $(ip link | grep UP | awk '{print $2}' | paste -sd ' , ' -)"
 echo "- Internal IP Address: $(ip -4 addr show | awk '/inet / && $2 !~ /^127/ {print $2}' | paste -sd ', ' -)"
 echo "- External IP Address: $(curl -s ifconfig.me)"
-echo "- Default Gateway: $(ip route | awk '/default/ {print $3}')"
-echo "- Public DNS Servers: $(nslookup -type=NS google.com | awk '/Server:/ {print $2}')"
+echo "- Default Gateway:     $(ip route | awk '/default/ {print $3}')"
+echo "- Public DNS Servers:  $(nslookup -type=NS google.com | awk '/Server:/ {print $2}')"
 echo
 
 # Display Network and Security Information
 echo "==================================================="
 echo "Network and Security Information:"
 echo
-echo -e "- Firewall Status (firewalld): $(if [[ $FIREWALL_STATUS -eq 0 ]]; then echo "${GREEN}Active${RESET}"; else echo "${RED}Inactive${RESET} --- ${YELLOW}(Security Groups likely used)${RESET}"; fi)"
+echo -e "- Firewall Status (firewalld): $(if [[ $FIREWALL_STATUS -eq 0 ]]; then echo "${GREEN}Active${RESET}"; else echo "${RED}Inactive${RESET} --- ${YELLOW}(Security Groups Likely Used)${RESET}"; fi)"
 echo -e "- Open Ports: $(if [[ $FIREWALL_STATUS -eq 0 ]]; then echo -e $(firewall-cmd --list-ports | tr ' ' '\n' | awk '{printf "[%s]  ", $1}'); else echo -e "${RED}N/A${RESET}"; fi)"
 echo -e "- OpenSSH Version: $(ssh -V 2>&1 | cut -d' ' -f1-2)"
 echo -e "- Heartbleed vulnerability (OpenSSL): $(openssl version -a | grep -q 'OpenSSL 1.0.1[0-9a-f]*' && echo "Vulnerable, Update OpenSSL!" || echo "Not Vulnerable")"
