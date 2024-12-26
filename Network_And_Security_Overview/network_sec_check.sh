@@ -18,7 +18,7 @@ ping -c 4 8.8.8.8 > /dev/null
 CONNECTION_STATUS=$?
 
 # Test Firewall Status: 
-command -v systemctl &>/dev/null && systemctl is-active firewalld
+command -v systemctl &>/dev/null && systemctl is-active firewalld > /dev/null
 FIREWALL_STATUS=$?
 
 
