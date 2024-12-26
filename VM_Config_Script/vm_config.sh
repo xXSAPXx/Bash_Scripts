@@ -2,7 +2,7 @@
 set -uo pipefail
 
 
-# Colors for output
+# Colors for output:
 GREEN="\e[32m"
 RED="\e[31m"
 YELLOW="\e[33m"
@@ -11,7 +11,7 @@ RESET="\e[0m"
 # List of DNF Packages to check for and then install:
 package_list=("htop" "btop" "atop" "iotop" "sysstat" "lsof" "curl" "wget" "bind-utils" "iproute" "telnet" "tcpdump" "traceroute" "vim-enhanced" "bash-completion" "git" "tmux" "python3-dnf-plugin-versionlock")
 
-# List of functions for system checks and system configurations to be performed
+# List of functions for system checks and system configurations to be performed:
 func_list_sys_checks=("prompt_check" "bash_history_check" "time_format_check")
 func_list_sys_config=("prompt_config" "bash_history_config" "time_format_config")
 
@@ -45,29 +45,29 @@ show_help() {
 print_vm_details() {
     echo -e "_________________________________________________________________________________"
     echo
-    echo "Static Hostname: $(hostnamectl --static)"
-    echo
-    echo "OS: $(uname -o)"
-    echo
-    echo
-    echo
-    echo "$(grep -E '^(NAME|VERSION|PRETTY_NAME|BUG_REPORT_URL|SUPPORT_END)=' /etc/os-release | awk '{print $0 "\n"}' )"
-    echo
-    echo "Kernel Version: $(uname -r)"
+    echo -e "System Information:"
+    echo -e "---------------------"
+    echo -e "Static Hostname:        $(hostnamectl --static)"
+    echo -e "Operating System:       $(uname -o)"
+    echo -e "Distribution:           $(grep PRETTY_NAME /etc/os-release | cut -d '=' -f 2 | tr -d '\"')"
+    echo -e "Kernel Version:         $(uname -r)"
+    echo -e "Architecture:           $(uname -m)"
     echo
     echo
+    echo -e "Hardware Information:"
+    echo -e "---------------------"
+    echo -e "CPU:                   $(grep -m 1 'model name' /proc/cpuinfo | cut -d ':' -f 2 | xargs)"
+    echo -e "Hardware Vendor:       $(dmidecode -s system-manufacturer)"
+    echo -e "Firmware Version:      $(dmidecode -s bios-version)"
     echo
-    echo "Architecture: $(uname -m)"
     echo
-    echo "CPU Info: $(grep -m 1 'model name' /proc/cpuinfo | cut -d ':' -f 2 | xargs)"
-    echo
-    echo
-    echo
-    echo "Hardware Vendor: $(dmidecode -s system-manufacturer)"
-    echo
-    echo "Firmware Version: $(dmidecode -s bios-version)"
+    echo -e "Additional Details:"
+    echo -e "---------------------"
+    echo -e "Support End Date:      $(grep SUPPORT_END /etc/os-release | cut -d '=' -f 2 | tr -d '\"')"
+    echo -e "Bug Report URL:        $(grep BUG_REPORT_URL /etc/os-release | cut -d '=' -f 2 | tr -d '\"')"
     echo
 }
+
 
 
 
