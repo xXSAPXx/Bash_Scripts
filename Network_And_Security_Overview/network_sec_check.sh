@@ -39,7 +39,7 @@ echo "==================================================="
 echo "Network and Security Information:"
 echo
 echo -e "- Firewall Status (firewalld): $(if [[ $FIREWALL_STATUS -eq 0 ]]; then echo "${GREEN}Active${RESET}"; else echo "${RED}Inactive${RESET} --- ${YELLOW}Not Installed (Security Groups likely used)${RESET}"; fi)"
-echo -e "- Service Ports in Use: $(ss -tunlp | awk '/LISTEN/ && $5 ~ /:/ {split($5, a, ":"); print a[2]}' | sort -n | uniq | awk 'NF {printf "[%s] ", $0}')"
+echo -e "- Open Ports: $(if [[ $FIREWALL_STATUS -eq 0 ]]; then echo -e $(firewall-cmd --list-ports | awk 'NF {printf "[%s] ", $0}'); else echo -e "${RED}N/A${RESET}"; fi)"
 echo -e "- OpenSSH Version: $(ssh -V 2>&1 | cut -d' ' -f1-2)"
 echo -e "- Heartbleed vulnerability (OpenSSL): $(openssl version -a | grep -q 'OpenSSL 1.0.1[0-9a-f]*' && echo "Vulnerable, Update OpenSSL!" || echo "Not Vulnerable")"
 echo -e "- Shellshock vulnerability (Bash): $(env 'VAR=() { :;}; echo vulnerable' 'FUNCTION()=() { :;}; echo Vulnerable' bash -c 'echo Not Vulnerable')"
