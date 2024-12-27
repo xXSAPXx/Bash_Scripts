@@ -425,6 +425,7 @@ bash_history_config() {
 		
 	
     else
+    	echo
 	echo -e "${YELLOW}Configuring Bash history settings...${RESET}"
 			
 	# Add history config settings: 
