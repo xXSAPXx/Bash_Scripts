@@ -320,7 +320,7 @@ prompt_check() {
         fi
     else
         echo
-        echo -e "❌  ${RED}Bash prompt is not configured (file does not exist).${RESET}"
+        echo -e "❌  ${RED}Bash prompt is not configured.${RESET}"
     fi
 }
 
@@ -379,7 +379,7 @@ bash_history_check() {
 	fi
     else
 	echo
-        echo -e "❌  ${RED}Bash history is not configured (file does not exist).${RESET}"
+        echo -e "❌  ${RED}Bash history is not configured.${RESET}"
     fi
 }
 
