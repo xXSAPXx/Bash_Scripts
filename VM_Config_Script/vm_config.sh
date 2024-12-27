@@ -382,25 +382,26 @@ bash_history_config() {
 		
 		# Add history config settings: 
 		echo "# ROOT User Bash History Configuration:" >> "$BASH_HISTORY_SH"
-  		echo >> "$BASH_HISTORY_SH"
-  		echo "YELLOW="\e[33m"" >> "$BASH_HISTORY_SH"
-    		echo "GREEN="\e[32m"" >> "$BASH_HISTORY_SH"
-      		echo "RESET="\e[0m"" >> "$BASH_HISTORY_SH"
 		echo >> "$BASH_HISTORY_SH"
-  		echo "# RAM History Buffer and Disk file size:" >> "$BASH_HISTORY_SH"
+		echo "BLUE=\"\e[34m\"" >> "$BASH_HISTORY_SH"
+		echo "YELLOW=\"\e[33m\"" >> "$BASH_HISTORY_SH"
+		echo "GREEN=\"\e[32m\"" >> "$BASH_HISTORY_SH"
+		echo "RESET=\"\e[0m\"" >> "$BASH_HISTORY_SH"
+		echo >> "$BASH_HISTORY_SH"
+		echo "# RAM History Buffer and Disk file size:" >> "$BASH_HISTORY_SH"
 		echo "HISTSIZE=1000" >> "$BASH_HISTORY_SH"
 		echo "HISTFILESIZE=2000" >> "$BASH_HISTORY_SH"
 		echo >> "$BASH_HISTORY_SH"
-  		echo "# No bash commands are gonna be ignored: (Only duplicate commands executed consecutively)" >> "$BASH_HISTORY_SH"
+		echo "# No bash commands are gonna be ignored (Only duplicate commands executed consecutively)" >> "$BASH_HISTORY_SH"
 		echo "HISTIGNORE=''" >> "$BASH_HISTORY_SH"
 		echo "HISTCONTROL='ignoredups'" >> "$BASH_HISTORY_SH"
-  		echo >> "$BASH_HISTORY_SH"
-    		echo "# Persist command history immediately:" >> "$BASH_HISTORY_SH"
+		echo >> "$BASH_HISTORY_SH"
+		echo "# Persist command history immediately:" >> "$BASH_HISTORY_SH"
 		echo "PROMPT_COMMAND='history -a'" >> "$BASH_HISTORY_SH"
-  		echo >> "$BASH_HISTORY_SH"
-    		echo "# Command Timestamps:" >> "$BASH_HISTORY_SH"
+		echo >> "$BASH_HISTORY_SH"
+		echo "# Command Timestamps:" >> "$BASH_HISTORY_SH"
 		echo 'HISTTIMEFORMAT=`echo -e ${GREEN}[${RESET}%F %T ${YELLOW}UTC${RESET}${GREEN}] $RESET`' >> "$BASH_HISTORY_SH"
-		
+  
 		echo -e "╰┈➤   ✅  ${GREEN}Bash history settings added successfully!${RESET}"
 	fi
     fi	
