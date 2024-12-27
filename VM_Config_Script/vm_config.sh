@@ -310,12 +310,17 @@ prompt_check() {
     BASH_PROMPT_SH=/etc/profile.d/bash_profile.sh
 
     # Check if prompt is already configured:
-    if grep -qE '^\s*PS1=' "$BASH_PROMPT_SH"; then
-	echo
-        echo -e "✅  ${GREEN}Bash prompt is already configured.${RESET}"
+    if [[ -f "$BASH_PROMPT_SH" ]]; then
+        if grep -qE '^\s*PS1=' "$BASH_PROMPT_SH"; then
+            echo
+            echo -e "✅  ${GREEN}Bash prompt is already configured.${RESET}"
+        else
+            echo
+            echo -e "❌  ${RED}Bash prompt is not configured.${RESET}"
+        fi
     else
-	echo
-	echo -e "❌  ${RED}Bash prompt is not configured.${RESET}"
+        echo
+        echo -e "❌  ${RED}Bash prompt is not configured (file does not exist).${RESET}"
     fi
 }
 
@@ -326,20 +331,25 @@ prompt_config() {
     BASH_PROMPT_SH=/etc/profile.d/bash_profile.sh
 
     # Check if prompt is already configured:
-    if grep -qE '^\s*PS1=' "$BASH_PROMPT_SH"; then
-        echo
-        echo -e "✅  ${GREEN}Bash prompt is already configured.${RESET}"
-    else
-        echo -e "${YELLOW}Bash prompt is not configured. Setting it now...${RESET}"
+    if [[ -f "$BASH_PROMPT_SH" ]]; then
+        if grep -qE '^\s*PS1=' "$BASH_PROMPT_SH"; then
+		echo
+		echo -e "✅  ${GREEN}Bash prompt is already configured.${RESET}"
+        else
+		echo -e "${YELLOW}Bash prompt is not configured. Setting it now...${RESET}"
 
-        # Append the prompt configuration to .bashrc:
-	echo "" >> "$BASH_PROMPT_SH"
-        echo "# If user ID = 0 then set red color for the prompt:" >> "$BASH_PROMPT_SH"
-        echo "if [ "$(id -u)" -eq 0 ]; then" >> "$BASH_PROMPT_SH"     
-        echo "    PS1='[\[\e[1;31m\]\u\e[0m@\h \w ]# '" >> "$BASH_PROMPT_SH"
-        echo "fi" >> "$BASH_PROMPT_SH"
-        echo
-        echo -e "╰┈➤   ✅  ${GREEN}Bash prompt successfully configured!${RESET}"
+		# Append the prompt configuration to .bashrc:
+		echo "# If user ID = 0 then set red color for the prompt:" >> "$BASH_PROMPT_SH"
+		echo "if [ "$(id -u)" -eq 0 ]; then" >> "$BASH_PROMPT_SH"     
+		echo "    PS1='[\[\e[1;31m\]\u\e[0m@\h \w ]# '" >> "$BASH_PROMPT_SH"
+		echo "fi" >> "$BASH_PROMPT_SH"
+		echo
+		echo -e "╰┈➤   ✅  ${GREEN}Bash prompt successfully configured!${RESET}"
+        fi
+    
+    else
+	echo
+        echo -e "❌  ${RED}Bash prompt is not configured (file does not exist).${RESET}"
     fi
 }
 
@@ -351,13 +361,18 @@ prompt_config() {
 bash_history_check() {
 
     BASH_HISTORY_SH=/etc/profile.d/bash_history.sh
-	 
-    if grep -qE '^\s*HISTSIZE=|^\s*HISTFILESIZE=|^\s*HISTIGNORE=|^\s*HISTCONTROL=|^\s*PROMPT_COMMAND=|^\s*HISTTIMEFORMAT=' "$BASH_HISTORY_SH"; then
-	echo
-	echo -e "✅  ${GREEN}Bash history settings are already configured.${RESET}"
+	
+    if [[ -f "$BASH_PROMPT_SH" ]]; then 
+	if grep -qE '^\s*HISTSIZE=|^\s*HISTFILESIZE=|^\s*HISTIGNORE=|^\s*HISTCONTROL=|^\s*PROMPT_COMMAND=|^\s*HISTTIMEFORMAT=' "$BASH_HISTORY_SH"; then
+		echo
+		echo -e "✅  ${GREEN}Bash history settings are already configured.${RESET}"
+	else
+		echo
+		echo -e "❌  ${RED}Bash history settings are not configured.${RESET}"
+	fi
     else
 	echo
-	echo -e "❌  ${RED}Bash history settings are not configured.${RESET}"
+        echo -e "❌  ${RED}Bash history is not configured (file does not exist).${RESET}"
     fi
 }
 
