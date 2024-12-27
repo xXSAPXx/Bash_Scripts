@@ -1,11 +1,13 @@
 #!/bin/bash
 set -uo pipefail
 
-# Variables: 
+# Colors for output:
 GREEN="\e[32m"
+LGREEN="\e[92m"
+BLUE="\e[34m"
+LBLUE="\e[94"
 RED="\e[31m"
 YELLOW="\e[33m"
-BLUE='\033[1;34m'
 RESET="\e[0m"
 
 # Inform the user that the script is running:
