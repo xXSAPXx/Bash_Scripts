@@ -372,10 +372,10 @@ bash_history_check() {
     if [[ -f "$BASH_HISTORY_SH" ]]; then 
 	if grep -qE '^\s*HISTSIZE=|^\s*HISTFILESIZE=|^\s*HISTIGNORE=|^\s*HISTCONTROL=|^\s*PROMPT_COMMAND=|^\s*HISTTIMEFORMAT=' "$BASH_HISTORY_SH"; then
 		echo
-		echo -e "✅  ${GREEN}Bash history settings are already configured.${RESET}"
+		echo -e "✅  ${GREEN}Bash history is already configured.${RESET}"
 	else
 		echo
-		echo -e "❌  ${RED}Bash history settings are not configured.${RESET}"
+		echo -e "❌  ${RED}Bash history is not configured.${RESET}"
 	fi
     else
 	echo
@@ -393,7 +393,7 @@ bash_history_config() {
     if [[ -f "$BASH_HISTORY_SH" ]]; then
 	if grep -qE '^\s*HISTSIZE=|^\s*HISTFILESIZE=|^\s*HISTIGNORE=|^\s*HISTCONTROL=|^\s*PROMPT_COMMAND=|^\s*HISTTIMEFORMAT=' "$BASH_HISTORY_SH"; then
 		echo
-		echo -e "✅  ${GREEN}Bash history settings are already configured.${RESET}"
+		echo -e "✅  ${GREEN}Bash history is already configured.${RESET}"
 	else
 		echo 
 		echo -e "${YELLOW}Configuring Bash history settings...${RESET}"
