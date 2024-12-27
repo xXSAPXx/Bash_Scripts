@@ -391,7 +391,7 @@ bash_history_config() {
 		echo "HISTSIZE=1000" >> "$BASH_HISTORY_SH"
 		echo "HISTFILESIZE=2000" >> "$BASH_HISTORY_SH"
 		echo >> "$BASH_HISTORY_SH"
-  		echo "# No bash commands are gonna be ignored: (Only duplicate commands executed consecutively)" >> "$BASHRC"
+  		echo "# No bash commands are gonna be ignored: (Only duplicate commands executed consecutively)" >> "$BASH_HISTORY_SH"
 		echo "HISTIGNORE=''" >> "$BASH_HISTORY_SH"
 		echo "HISTCONTROL='ignoredups'" >> "$BASH_HISTORY_SH"
   		echo >> "$BASH_HISTORY_SH"
