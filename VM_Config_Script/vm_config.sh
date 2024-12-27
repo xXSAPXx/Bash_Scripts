@@ -297,6 +297,7 @@ check_system_config() {
 fix_system_config() {
     echo -e "_________________________________________________________________________________"
     echo
+    
     # Check if the user is root
     if [ "$(id -u)" -ne 0 ]; then
         echo
