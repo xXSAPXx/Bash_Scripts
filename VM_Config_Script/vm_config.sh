@@ -4,6 +4,9 @@ set -uo pipefail
 
 # Colors for output:
 GREEN="\e[32m"
+LGREEN="\e[92m"
+BLUE="\e[34m"
+LBLUE="\e[94"
 RED="\e[31m"
 YELLOW="\e[33m"
 RESET="\e[0m"
@@ -304,10 +307,10 @@ fix_system_config() {
 # Function for checking prompt_configuration:
 prompt_check() {
 
-    BASHRC=~/.bashrc
+    BASH_PROMPT_SH=/etc/profile.d/bash_profile.sh
 
     # Check if prompt is already configured:
-    if grep -qE '^\s*PS1=' "$BASHRC"; then
+    if grep -qE '^\s*PS1=' "$BASH_PROMPT_SH"; then
 	echo
         echo -e "✅  ${GREEN}Bash prompt is already configured.${RESET}"
     else
@@ -320,21 +323,21 @@ prompt_check() {
 # Function for installing prompt_configuration:
 prompt_config() {
 
-    BASHRC=~/.bashrc
+    BASH_PROMPT_SH=/etc/profile.d/bash_profile.sh
 
     # Check if prompt is already configured:
-    if grep -qE '^\s*PS1=' "$BASHRC"; then
+    if grep -qE '^\s*PS1=' "$BASH_PROMPT_SH"; then
         echo
         echo -e "✅  ${GREEN}Bash prompt is already configured.${RESET}"
     else
         echo -e "${YELLOW}Bash prompt is not configured. Setting it now...${RESET}"
 
         # Append the prompt configuration to .bashrc:
-	echo "" >> "$BASHRC"
-        echo "# If user ID = 0 then set red color for the prompt:" >> "$BASHRC"
-        echo "if [ "$(id -u)" -eq 0 ]; then" >> "$BASHRC"     
-        echo "    PS1='[\[\e[1;31m\]\u\e[0m@\h \w ]# '" >> "$BASHRC"
-        echo "fi" >> "$BASHRC"
+	echo "" >> "$BASH_PROMPT_SH"
+        echo "# If user ID = 0 then set red color for the prompt:" >> "$BASH_PROMPT_SH"
+        echo "if [ "$(id -u)" -eq 0 ]; then" >> "$BASH_PROMPT_SH"     
+        echo "    PS1='[\[\e[1;31m\]\u\e[0m@\h \w ]# '" >> "$BASH_PROMPT_SH"
+        echo "fi" >> "$BASH_PROMPT_SH"
         echo
         echo -e "╰┈➤   ✅  ${GREEN}Bash prompt successfully configured!${RESET}"
     fi
@@ -347,9 +350,9 @@ prompt_config() {
 # Function to check if bash history is configured:
 bash_history_check() {
 
-    BASHRC=~/.bashrc
+    BASH_HISTORY_SH=/etc/profile.d/bash_history.sh
 	 
-    if grep -qE '^\s*HISTSIZE=|^\s*HISTFILESIZE=|^\s*HISTIGNORE=|^\s*HISTCONTROL=|^\s*PROMPT_COMMAND=|^\s*HISTTIMEFORMAT=' "$BASHRC"; then
+    if grep -qE '^\s*HISTSIZE=|^\s*HISTFILESIZE=|^\s*HISTIGNORE=|^\s*HISTCONTROL=|^\s*PROMPT_COMMAND=|^\s*HISTTIMEFORMAT=' "$BASH_HISTORY_SH"; then
 	echo
 	echo -e "✅  ${GREEN}Bash history settings are already configured.${RESET}"
     else
@@ -363,14 +366,14 @@ bash_history_check() {
 # Function to configure bash history:
 bash_history_config() {
 	
-    BASHRC=~/.bashrc
+    BASH_HISTORY_SH=/etc/profile.d/bash_history.sh
 
     if [ "$(id -u)" -ne 0 ]; then
  	echo
 	echo -e "❌  ${RED}Must Be ROOT to configure Bash History!${RESET}"
 		
     else	
-	   if grep -qE '^\s*HISTSIZE=|^\s*HISTFILESIZE=|^\s*HISTIGNORE=|^\s*HISTCONTROL=|^\s*PROMPT_COMMAND=|^\s*HISTTIMEFORMAT=' "$BASHRC"; then
+	   if grep -qE '^\s*HISTSIZE=|^\s*HISTFILESIZE=|^\s*HISTIGNORE=|^\s*HISTCONTROL=|^\s*PROMPT_COMMAND=|^\s*HISTTIMEFORMAT=' "$BASH_HISTORY_SH"; then
 		echo
 		echo -e "✅  ${GREEN}Bash history settings are already configured.${RESET}"
 	   else
@@ -378,15 +381,25 @@ bash_history_config() {
 		echo -e "${YELLOW}Configuring Bash history settings...${RESET}"
 		
 		# Add history config settings: 
-   		echo "" >> "$BASHRC"
-		echo "# ROOT User Bash History Configuration:" >> "$BASHRC"
-
-		echo "HISTSIZE=1000" >> "$BASHRC"
-		echo "HISTFILESIZE=2000" >> "$BASHRC"
-		echo "HISTIGNORE=''" >> "$BASHRC"
-		echo "HISTCONTROL='ignoredups'" >> "$BASHRC"
-		echo "PROMPT_COMMAND='history -a'" >> "$BASHRC"
-		echo 'HISTTIMEFORMAT=$(echo -e "\e[32m[\e[0m%F %T \e[33mUTC\e[0m\e[32m] \e[0m")' >> "$BASHRC"
+		echo "# ROOT User Bash History Configuration:" >> "$BASH_HISTORY_SH"
+  		echo >> "$BASH_HISTORY_SH"
+  		echo "YELLOW="\e[33m"" >> "$BASH_HISTORY_SH"
+    		echo "GREEN="\e[32m"" >> "$BASH_HISTORY_SH"
+      		echo "RESET="\e[0m"" >> "$BASH_HISTORY_SH"
+		echo >> "$BASH_HISTORY_SH"
+  		echo "# RAM History Buffer and Disk file size:" >> "$BASH_HISTORY_SH"
+		echo "HISTSIZE=1000" >> "$BASH_HISTORY_SH"
+		echo "HISTFILESIZE=2000" >> "$BASH_HISTORY_SH"
+		echo >> "$BASH_HISTORY_SH"
+  		echo "# No bash commands are gonna be ignored: (Only duplicate commands executed consecutively)" >> "$BASHRC"
+		echo "HISTIGNORE=''" >> "$BASH_HISTORY_SH"
+		echo "HISTCONTROL='ignoredups'" >> "$BASH_HISTORY_SH"
+  		echo >> "$BASH_HISTORY_SH"
+    		echo "# Persist command history immediately:" >> "$BASH_HISTORY_SH"
+		echo "PROMPT_COMMAND='history -a'" >> "$BASH_HISTORY_SH"
+  		echo >> "$BASH_HISTORY_SH"
+    		echo "# Command Timestamps:" >> "$BASH_HISTORY_SH"
+		echo 'HISTTIMEFORMAT=`echo -e ${GREEN}[${RESET}%F %T ${YELLOW}UTC${RESET}${GREEN}] $RESET`' >> "$BASH_HISTORY_SH"
 		
 		echo -e "╰┈➤   ✅  ${GREEN}Bash history settings added successfully!${RESET}"
 	fi
