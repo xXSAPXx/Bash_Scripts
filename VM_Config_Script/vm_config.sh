@@ -120,6 +120,15 @@ check_system_updates() {
 update_system() {
     echo -e "_________________________________________________________________________________"
     echo
+    
+    # Check if the user is root
+    if [ "$(id -u)" -ne 0 ]; then
+        echo
+        echo -e "❌  ${RED}Must Be ROOT to run System Update!${RESET}"
+        echo
+        return 1  # Exit the function with a failure code
+    fi
+    
     echo -e "Checking for System Updates:"
 
     if command -v dnf &>/dev/null; then
@@ -141,7 +150,7 @@ update_system() {
             echo
             echo -e "╰┈➤   ${GREEN}System updated successfully.${RESET}"
             echo
-            echo -e "╰┈➤   ${YELLOW}Reboot is a  good practice after OS Update${RESET}"
+            echo -e "╰┈➤   ${YELLOW}Reboot is a good practice after OS Update${RESET}"
             echo
             read -p "╰┈➤   Would you like to reboot now? (Y/N): " REBOOT_ANSWER
                 	if [[ "$REBOOT_ANSWER" =~ ^[Yy]$ ]]; then
@@ -288,18 +297,26 @@ check_system_config() {
 fix_system_config() {
     echo -e "_________________________________________________________________________________"
     echo
+    # Check if the user is root
+    if [ "$(id -u)" -ne 0 ]; then
+        echo
+        echo -e "❌  ${RED}Must Be ROOT to alter System Configuration!${RESET}"
+        echo
+        return 1  # Exit the function with a failure code
+    fi
+
     echo -e "Checking System Configuration:"
     echo
+    
     for func in "${func_list_sys_config[@]}"; do
         if declare -f "$func" > /dev/null; then
-
             "$func"   # Call the function
-
-            else
+        else
             echo -e "${RED}Function $func NOT FOUND!${RESET}"
         fi
     done
 }
+
 
 
 ########################################################## SYSTEM CHECK / CONFIG FUNCTIONS ##########################################################
@@ -328,39 +345,26 @@ prompt_check() {
 # Function for installing prompt_configuration:
 prompt_config() {
 
+    touch /etc/profile.d/bash_profile.sh &>/dev/null
     BASH_PROMPT_SH=/etc/profile.d/bash_profile.sh
 
-    # Check if prompt is already configured:
-    if [[ -f "$BASH_PROMPT_SH" ]]; then
-        if grep -qE '^\s*PS1=' "$BASH_PROMPT_SH"; then
-		echo
-		echo -e "✅  ${GREEN}Bash prompt is already configured.${RESET}"
-        else
-		echo -e "${YELLOW}Bash prompt is not configured. Setting it now...${RESET}"
-
-		# Append the prompt configuration to file:
-		echo "# If user ID = 0 then set red color for the prompt:" >> "$BASH_PROMPT_SH"
-		echo "if [ "$(id -u)" -eq 0 ]; then" >> "$BASH_PROMPT_SH"     
-		echo "    PS1='[\[\e[1;31m\]\u\e[0m@\h \w ]# '" >> "$BASH_PROMPT_SH"
-		echo "fi" >> "$BASH_PROMPT_SH"
-		echo
-		echo -e "╰┈➤   ✅  ${GREEN}Bash prompt successfully configured!${RESET}"
-        fi
-    
+    # Check if the prompt is already configured:
+    if grep -qE '^\s*PS1=' "$BASH_PROMPT_SH"; then
+	echo
+	echo -e "✅  ${GREEN}Bash prompt is already configured.${RESET}"
     else
-        echo -e "${YELLOW}Bash prompt is not configured. Setting it now...${RESET}"
-		
-		# Create the file and configure the prompt:
-        echo "# If user ID = 0 then set red color for the prompt:" >> "$BASH_PROMPT_SH"
-        echo "if [ \$(id -u) -eq 0 ]; then" >> "$BASH_PROMPT_SH"
-        echo "    PS1='[\[\e[1;31m\]\u\e[0m@\h \w ]# '" >> "$BASH_PROMPT_SH"
-        echo "fi" >> "$BASH_PROMPT_SH"
+	echo -e "${YELLOW}Bash prompt is not configured. Setting it now...${RESET}"
 
-        echo
-        echo -e "╰┈➤   ✅  ${GREEN}File created and bash prompt successfully configured!${RESET}"
+	# Append the prompt configuration to file:
+	cat <<EOF > "$BASH_PROMPT_SH"
+# If user ID = 0 then set red color for the prompt:
+if [ "$(id -u)" -eq 0 ]; then
+    PS1='[\[\e[1;31m\]\u\e[0m@\h \w ]# '
+fi
+EOF
+	echo -e "╰┈➤   ✅  ${GREEN}Bash prompt successfully configured!${RESET}"
     fi
 }
-
 
 
 
@@ -387,72 +391,45 @@ bash_history_check() {
 
 # Function to configure bash history:
 bash_history_config() {
-	
+    
+    touch /etc/profile.d/bash_history.sh &>/dev/null
     BASH_HISTORY_SH=/etc/profile.d/bash_history.sh
 
-    if [[ -f "$BASH_HISTORY_SH" ]]; then
-	if grep -qE '^\s*HISTSIZE=|^\s*HISTFILESIZE=|^\s*HISTIGNORE=|^\s*HISTCONTROL=|^\s*PROMPT_COMMAND=|^\s*HISTTIMEFORMAT=' "$BASH_HISTORY_SH"; then
-		echo
-		echo -e "✅  ${GREEN}Bash history is already configured.${RESET}"
-	else
-		echo 
-		echo -e "${YELLOW}Configuring Bash history settings...${RESET}"
-			
-		# Add history config settings: 
-		echo "# ROOT User Bash History Configuration:" >> "$BASH_HISTORY_SH"
-		echo >> "$BASH_HISTORY_SH"
-		echo "BLUE=\"\e[34m\"" >> "$BASH_HISTORY_SH"
-		echo "YELLOW=\"\e[33m\"" >> "$BASH_HISTORY_SH"
-		echo "GREEN=\"\e[32m\"" >> "$BASH_HISTORY_SH"
-		echo "RESET=\"\e[0m\"" >> "$BASH_HISTORY_SH"
-		echo >> "$BASH_HISTORY_SH"
-		echo "# RAM History Buffer and Disk file size:" >> "$BASH_HISTORY_SH"
-		echo "HISTSIZE=1000" >> "$BASH_HISTORY_SH"
-		echo "HISTFILESIZE=2000" >> "$BASH_HISTORY_SH"
-		echo >> "$BASH_HISTORY_SH"
-		echo "# No bash commands are gonna be ignored (Only duplicate commands executed consecutively)" >> "$BASH_HISTORY_SH"
-		echo "HISTIGNORE=''" >> "$BASH_HISTORY_SH"
-		echo "HISTCONTROL='ignoredups'" >> "$BASH_HISTORY_SH"
-		echo >> "$BASH_HISTORY_SH"
-		echo "# Persist command history immediately:" >> "$BASH_HISTORY_SH"
-		echo "PROMPT_COMMAND='history -a'" >> "$BASH_HISTORY_SH"
-		echo >> "$BASH_HISTORY_SH"
-		echo "# Command Timestamps:" >> "$BASH_HISTORY_SH"
-		echo 'HISTTIMEFORMAT=`echo -e ${GREEN}[${RESET}%F %T ${YELLOW}UTC${RESET}${GREEN}] $RESET`' >> "$BASH_HISTORY_SH"
-	
-		echo -e "╰┈➤   ✅  ${GREEN}Bash history settings added successfully!${RESET}"
-	fi
-		
-	
+    if grep -qE '^\s*HISTSIZE=|^\s*HISTFILESIZE=|^\s*HISTIGNORE=|^\s*HISTCONTROL=|^\s*PROMPT_COMMAND=|^\s*HISTTIMEFORMAT=' "$BASH_HISTORY_SH"; then
+        echo
+        echo -e "✅  ${GREEN}Bash history is already configured.${RESET}"
     else
-    	echo
-	echo -e "${YELLOW}Configuring Bash history settings...${RESET}"
-			
-	# Add history config settings: 
-	echo "# ROOT User Bash History Configuration:" >> "$BASH_HISTORY_SH"
-	echo >> "$BASH_HISTORY_SH"
-	echo "BLUE=\"\e[34m\"" >> "$BASH_HISTORY_SH"
-	echo "YELLOW=\"\e[33m\"" >> "$BASH_HISTORY_SH"
-	echo "GREEN=\"\e[32m\"" >> "$BASH_HISTORY_SH"
-	echo "RESET=\"\e[0m\"" >> "$BASH_HISTORY_SH"
-	echo >> "$BASH_HISTORY_SH"
-	echo "# RAM History Buffer and Disk file size:" >> "$BASH_HISTORY_SH"
-	echo "HISTSIZE=1000" >> "$BASH_HISTORY_SH"
-	echo "HISTFILESIZE=2000" >> "$BASH_HISTORY_SH"
-	echo >> "$BASH_HISTORY_SH"
-	echo "# No bash commands are gonna be ignored (Only duplicate commands executed consecutively)" >> "$BASH_HISTORY_SH"
-	echo "HISTIGNORE=''" >> "$BASH_HISTORY_SH"
-	echo "HISTCONTROL='ignoredups'" >> "$BASH_HISTORY_SH"
-	echo >> "$BASH_HISTORY_SH"
-	echo "# Persist command history immediately:" >> "$BASH_HISTORY_SH"
-	echo "PROMPT_COMMAND='history -a'" >> "$BASH_HISTORY_SH"
-	echo >> "$BASH_HISTORY_SH"
-	echo "# Command Timestamps:" >> "$BASH_HISTORY_SH"
-	echo 'HISTTIMEFORMAT=`echo -e ${GREEN}[${RESET}%F %T ${YELLOW}UTC${RESET}${GREEN}] $RESET`' >> "$BASH_HISTORY_SH"
-	
-	echo -e "╰┈➤   ✅  ${GREEN}Bash history settings added successfully!${RESET}"
-fi	
-}	
+        echo
+        echo -e "${YELLOW}Configuring Bash history settings...${RESET}"
+
+        # Add history config settings using EOF
+        cat <<EOF > "$BASH_HISTORY_SH"
+# ROOT User Bash History Configuration:
+
+BLUE="\e[34m"
+YELLOW="\e[33m"
+GREEN="\e[32m"
+RESET="\e[0m"
+
+# RAM History Buffer and Disk file size:
+HISTSIZE=1000
+HISTFILESIZE=2000
+
+# No bash commands are gonna be ignored (Only duplicate commands executed consecutively)
+HISTIGNORE=''
+HISTCONTROL='ignoredups'
+
+# Persist command history immediately:
+PROMPT_COMMAND='history -a'
+
+# Command Timestamps:
+HISTTIMEFORMAT=\`echo -e \${GREEN}[\${RESET}%F %T \${YELLOW}UTC\${RESET}\${GREEN}] \$RESET\`
+EOF
+
+        echo -e "╰┈➤   ✅  ${GREEN}Bash history settings added successfully!${RESET}"
+    fi
+}
+
 
 
 
@@ -474,25 +451,19 @@ time_format_check() {
 time_format_config() {
 	
     CONFIG_FILE=/etc/locale.conf
-
-    if [ "$(id -u)" -ne 0 ]; then
- 	echo
-	echo -e "❌  ${RED}Must Be ROOT to configure Time Format!${RESET}"
-		
-    else	
-		if grep -qE '^\s*LC_TIME=' "$CONFIG_FILE"; then
-			echo
-			echo -e "✅  ${GREEN}Time Format is already configured.${RESET}"
-		else
-			echo
-			echo -e "${YELLOW}Time Format is not configured. Setting it now...${RESET}"
+    	
+    if grep -qE '^\s*LC_TIME=' "$CONFIG_FILE"; then
+	echo
+	echo -e "✅  ${GREEN}Time Format is already configured.${RESET}"
+    else
+	echo
+	echo -e "${YELLOW}Time Format is not configured. Setting it now...${RESET}"
 			
-			# Apply the changes using localectl
-			echo "LC_TIME=C.UTF-8" | sudo tee -a "$CONFIG_FILE" > /dev/null
+	# Apply the changes using localectl
+	echo "LC_TIME=C.UTF-8" | tee -a "$CONFIG_FILE" > /dev/null
 			
-			echo -e "╰┈➤   ✅  ${GREEN}Time Format set successfully!${RESET}"
-		fi	
-    fi
+	echo -e "╰┈➤   ✅  ${GREEN}Time Format set successfully!${RESET}"
+    fi	
 }
 
 
