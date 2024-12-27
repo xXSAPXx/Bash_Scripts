@@ -333,7 +333,7 @@ prompt_config() {
 	echo "" >> "$BASHRC"
         echo "# If user ID = 0 then set red color for the prompt:" >> "$BASHRC"
         echo "if [ "$(id -u)" -eq 0 ]; then" >> "$BASHRC"     
-        echo "    PS1='[\[\e[1;31m\]\u\e[0m@\h \w\ ]# '" >> "$BASHRC"
+        echo "    PS1='[\[\e[1;31m\]\u\e[0m@\h \w ]# '" >> "$BASHRC"
         echo "fi" >> "$BASHRC"
         echo
         echo -e "╰┈➤   ✅  ${GREEN}Bash prompt successfully configured!${RESET}"
