@@ -369,7 +369,7 @@ bash_history_check() {
 
     BASH_HISTORY_SH=/etc/profile.d/bash_history.sh
 	
-    if [[ -f "$BASH_PROMPT_SH" ]]; then 
+    if [[ -f "$BASH_HISTORY_SH" ]]; then 
 	if grep -qE '^\s*HISTSIZE=|^\s*HISTFILESIZE=|^\s*HISTIGNORE=|^\s*HISTCONTROL=|^\s*PROMPT_COMMAND=|^\s*HISTTIMEFORMAT=' "$BASH_HISTORY_SH"; then
 		echo
 		echo -e "✅  ${GREEN}Bash history settings are already configured.${RESET}"
