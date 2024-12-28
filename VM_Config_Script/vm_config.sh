@@ -6,7 +6,7 @@ set -uo pipefail
 GREEN="\e[32m"
 LGREEN="\e[92m"
 BLUE="\e[34m"
-LBLUE="\e[94"
+LBLUE="\e[94m"
 RED="\e[31m"
 YELLOW="\e[33m"
 RESET="\e[0m"
