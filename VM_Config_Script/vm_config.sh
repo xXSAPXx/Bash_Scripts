@@ -412,11 +412,11 @@ YELLOW="\e[33m"
 GREEN="\e[32m"
 RESET="\e[0m"
 
-# RAM History Buffer and Disk file size:
+# RAM History Buffer and Disk file size: 
 HISTSIZE=1000
 HISTFILESIZE=2000
 
-# No bash commands are gonna be ignored (Only duplicate commands executed consecutively)
+# No bash commands are gonna be ignored (Only duplicate commands executed consecutively) 
 HISTIGNORE=''
 HISTCONTROL='ignoredups'
 
@@ -424,7 +424,7 @@ HISTCONTROL='ignoredups'
 PROMPT_COMMAND='history -a'
 
 # Command Timestamps:
-HISTTIMEFORMAT=\`echo -e \${GREEN}[\${RESET}%F %T \${YELLOW}UTC\${RESET}\${GREEN}] \$RESET\`
+HISTTIMEFORMAT=`echo -e ${GREEN}[${RESET}%F %T ${YELLOW}UTC${RESET}${GREEN}] $RESET`
 EOF
 
         echo -e "╰┈➤   ✅  ${GREEN}Bash history settings added successfully!${RESET}"
