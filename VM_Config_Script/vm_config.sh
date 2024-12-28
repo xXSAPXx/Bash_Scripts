@@ -403,7 +403,7 @@ bash_history_config() {
         echo
         echo -e "${YELLOW}Configuring Bash history settings...${RESET}"
 
-        # Add history config settings using EOF
+        # Add history config settings:
         cat <<'EOF' > "$BASH_HISTORY_SH"
 # ROOT User Bash History Configuration:
 
