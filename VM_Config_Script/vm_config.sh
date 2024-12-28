@@ -357,7 +357,7 @@ prompt_config() {
 	echo -e "${YELLOW}Bash prompt is not configured. Setting it now...${RESET}"
 
 	# Append the prompt configuration to file:
-	cat <<EOF > "$BASH_PROMPT_SH"
+	cat <<'EOF' > "$BASH_PROMPT_SH"
 # If user ID = 0 then set red color for the prompt:
 if [ "$(id -u)" -eq 0 ]; then
     PS1='[\[\e[1;31m\]\u\e[0m@\h \w ]# '
@@ -404,7 +404,7 @@ bash_history_config() {
         echo -e "${YELLOW}Configuring Bash history settings...${RESET}"
 
         # Add history config settings using EOF
-        cat <<EOF > "$BASH_HISTORY_SH"
+        cat <<'EOF' > "$BASH_HISTORY_SH"
 # ROOT User Bash History Configuration:
 
 BLUE="\e[34m"
