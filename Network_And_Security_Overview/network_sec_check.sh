@@ -50,10 +50,20 @@ echo "==================================================="
 echo "Listening Services:"
 echo
 echo -e "- Service Ports in Use: $(ss -tunlp | awk '/LISTEN/ && $5 ~ /:/ {split($5, a, ":"); print a[2]}' | sort -n | uniq | awk 'NF {printf "[%s] ", $0}')"
-echo
-echo "$(ss -tunlp | awk '/LISTEN/ {print "Service:", $7, "| Protocol:", $1, "| User:", $NF}' | column -t)"
-echo
+echo  
+echo -e "$(ss -tunlp | awk '/LISTEN/ {
+    split($7, service_info, "=");
+    pid = service_info[2];
+	  sub(/[),].*/, "", pid);
+    cmd = "ps -o user= -p " pid;
+    cmd | getline user;
+    close(cmd);
+    print "Service:", $7, "|| Port:", $5, "|| Protocol:", $1, "|| User:", user }' | column -t)"
+    
+echo 
+ 
 
+#echo "$(ss -tunlp | awk '/LISTEN/ {print "${LGREEN}Service:${RESET}", $7, "|| ${LBLUE}Protocol:${RESET}", $1, "|| ${YELLOW}User:${RESET}", $NF}' | column -t)"
 # Display ARP Table: 
 # echo "- ARP Table :"
 # echo "$(ip neigh)"
