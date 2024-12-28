@@ -61,6 +61,7 @@ echo -e "$(ss -tunlp | awk '/LISTEN/ {
     print "  Service:", $7, "|| Port:", $5, "|| Protocol:", $1, "|| User:", user }' | column -t)"
     
 echo 
+echo
  
 
 #echo "$(ss -tunlp | awk '/LISTEN/ {print "${LGREEN}Service:${RESET}", $7, "|| ${LBLUE}Protocol:${RESET}", $1, "|| ${YELLOW}User:${RESET}", $NF}' | column -t)"
