@@ -54,7 +54,7 @@ echo
 echo -e "$(ss -tunlp | awk '/LISTEN/ {
     split($7, service_info, "=");
     pid = service_info[2];
-	  sub(/[),].*/, "", pid);
+    sub(/[),].*/, "", pid);
     cmd = "ps -o user= -p " pid;
     cmd | getline user;
     close(cmd);
