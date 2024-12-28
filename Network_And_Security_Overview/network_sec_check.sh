@@ -5,7 +5,7 @@ set -uo pipefail
 GREEN="\e[32m"
 LGREEN="\e[92m"
 BLUE="\e[34m"
-LBLUE="\e[94"
+LBLUE="\e[94m"
 RED="\e[31m"
 YELLOW="\e[33m"
 RESET="\e[0m"
@@ -26,7 +26,7 @@ FIREWALL_STATUS=$?
 
 # Display summary of network status
 echo "==================================================="
-echo -e "System Network Status: [${BLUE}$(date '+%Y-%m-%d %H:%M:%S')${RESET}]"
+echo -e "System Network Status: [${LBLUE}$(date '+%Y-%m-%d %H:%M:%S')${RESET}]"
 echo
 echo -e "- Connectivity: $(if [[ $CONNECTION_STATUS -eq 0 ]]; then echo "${GREEN}Successful${RESET}"; else echo "${RED}Failed${RESET}"; fi)"
 echo "- Interfaces: $(ip link | grep UP | awk '{print $2}' | paste -sd ' , ' -)"
@@ -58,7 +58,7 @@ echo -e "$(ss -tunlp | awk '/LISTEN/ {
     cmd = "ps -o user= -p " pid;
     cmd | getline user;
     close(cmd);
-    print "Service:", $7, "|| Port:", $5, "|| Protocol:", $1, "|| User:", user }' | column -t)"
+    print "  Service:", $7, "|| Port:", $5, "|| Protocol:", $1, "|| User:", user }' | column -t)"
     
 echo 
  
